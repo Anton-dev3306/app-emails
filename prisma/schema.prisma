@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Subscription {
+  id           String   @id @default(cuid())
+  userEmail    String
+  senderEmail  String
+  senderName   String
+  status       String   @default("UNSUBSCRIBED")
+  subscribeLink String?
+  lastUpdated  DateTime @default(now())
+
+  @@unique([userEmail, senderEmail])
+  @@index([userEmail])
+  @@index([senderEmail])
+}
+
+// Modelo de grupos de newsletters
+model NewsletterGroup {
+  id          String                 @id @default(cuid())
+  userEmail   String
+  groupName   String
+  description String?
+  color       String                 @default("#3b82f6")
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  items       NewsletterGroupItem[]
+
+  @@unique([userEmail, groupName])
+  @@index([userEmail])
+}
+
+// Modelo de items dentro de grupos
+model NewsletterGroupItem {
+  id          String          @id @default(cuid())
+  groupId     String
+  senderEmail String
+  senderName  String?
+  addedAt     DateTime        @default(now())
+  group       NewsletterGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, senderEmail])
+  @@index([groupId])
+  @@index([senderEmail])
+}

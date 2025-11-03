@@ -1,103 +1,131 @@
-import Image from "next/image";
+"use client";
+import "@radix-ui/themes/styles.css";
+import { Theme, Flex } from "@radix-ui/themes";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { Loader } from "lucide-react";
+import { useState } from 'react';
+
+// Vistas
+import LandingPage from './LandingPage';
+import DashboardView from './DashboardView';
+
+// Hooks
+import { useEmailAnalysis } from './hooks/useEmailAnalysis';
+import { useSubscriptions } from './hooks/useSubscriptions';
+import { useNewsletterGroups } from './hooks/useNewsletterGroups';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    const { status, data: session } = useSession();
+    const [isSigningIn, setIsSigningIn] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    // Hooks de lógica (solo se ejecutan si hay sesión)
+    const {
+        isAnalyzing,
+        analysisStatus,
+        subscriptions,
+        handleAnalyzeEmails
+    } = useEmailAnalysis(session?.user?.email);
+
+    const {
+        subscriptionStates,
+        handleSubscriptionToggle,
+        handleSpamToggle
+    } = useSubscriptions(session?.user?.email);
+
+    const {
+        groups,
+        createGroup,
+        updateGroup,
+        deleteGroup,
+        addNewsletterToGroup,
+        removeNewsletterFromGroup
+    } = useNewsletterGroups(session?.user?.email);
+
+    // Manejador de inicio de sesión
+    const handleGetStarted = async () => {
+        try {
+            setIsSigningIn(true);
+            await signIn('google');
+        } catch (error) {
+            console.error('Error durante el inicio de sesión:', error);
+        } finally {
+            setIsSigningIn(false);
+        }
+    };
+
+    // Manejador de cierre de sesión
+    const handleSignOut = () => {
+        signOut({ redirect: false });
+    };
+
+    // Manejador para agregar newsletter a grupo
+    const handleAddToGroup = async (groupId, subscription) => {
+        const result = await addNewsletterToGroup(
+            groupId,
+            subscription.senderEmail,
+            subscription.sender
+        );
+
+        if (!result.success) {
+            alert(result.error || 'Error al agregar newsletter al grupo');
+        }
+    };
+
+    // Manejador para eliminar grupo con confirmación
+    const handleDeleteGroup = async (groupId) => {
+        if (!confirm('¿Estás seguro de eliminar este grupo? Se eliminarán todas las newsletters asociadas.')) {
+            return;
+        }
+
+        const result = await deleteGroup(groupId);
+        if (!result.success) {
+            alert(result.error || 'Error al eliminar grupo');
+        }
+    };
+
+    // Loading inicial
+    if (status === "loading") {
+        return (
+            <Theme>
+                <Flex
+                    align="center"
+                    justify="center"
+                    style={{ minHeight: '100vh' }}
+                >
+                    <Loader className="animate-spin h-12 w-12 text-blue-600" />
+                </Flex>
+            </Theme>
+        );
+    }
+
+    // Si NO está autenticado -> Mostrar Landing Page
+    if (status === "unauthenticated") {
+        return (
+            <LandingPage
+                onGetStarted={handleGetStarted}
+                isLoading={isSigningIn}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+        );
+    }
+
+    // Si está autenticado -> Mostrar Dashboard
+    return (
+        <DashboardView
+            session={session}
+            onSignOut={handleSignOut}
+            isAnalyzing={isAnalyzing}
+            analysisStatus={analysisStatus}
+            onAnalyze={handleAnalyzeEmails}
+            subscriptions={subscriptions}
+            subscriptionStates={subscriptionStates}
+            onToggleSubscription={handleSubscriptionToggle}
+            onToggleSpam={handleSpamToggle}
+            groups={groups}
+            onCreateGroup={createGroup}
+            onUpdateGroup={updateGroup}
+            onDeleteGroup={handleDeleteGroup}
+            onAddToGroup={handleAddToGroup}
+            onRemoveFromGroup={removeNewsletterFromGroup}
+        />
+    );
 }
