@@ -192,3 +192,25 @@ export function useNewsletterGroups(userEmail) {
             });
 
             const data = await response.json();
+            return { success: false, error: 'Error de conexión al remover newsletter' };
+        }
+
+    return {
+        // Estado
+        groups,
+        loading,
+        error,
+
+        // Acciones CRUD
+        createGroup,
+        updateGroup,
+        deleteGroup,
+
+        // Acciones de newsletters en grupos
+        addNewsletterToGroup,
+        removeNewsletterFromGroup,
+
+        // Utilidades
+        refreshGroups: fetchGroups
+    };
+}

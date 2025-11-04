@@ -76,11 +76,12 @@ export default function DashboardView({
 
                                     {/* Selector de grupo y botón analizar */}
                                     <Flex justify="between" align="center" gap="3" mb="4">
+                                        {/* Selector de grupo y botón analizar
                                         <GroupSelector
                                             groups={groups}
                                             selectedGroup={selectedGroupId}
                                             onSelectGroup={setSelectedGroupId}
-                                        />
+                                        /> */}
                                         <AnalyzeButton
                                             isAnalyzing={isAnalyzing}
                                             onAnalyze={onAnalyze}
