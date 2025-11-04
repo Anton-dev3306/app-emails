@@ -2,6 +2,8 @@
 // remove-newsletter.php
 require_once 'db.php';
 
+header('Content-Type: application/json; charset=utf-8');
+
 if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     http_response_code(405);
     echo json_encode(['success' => false, 'error' => 'Método no permitido']);
@@ -9,6 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
+
+// Permitir que los parámetros también lleguen por GET si se desea
 $groupId = $input['group_id'] ?? $_GET['group_id'] ?? null;
 $senderEmail = $input['sender_email'] ?? $_GET['sender_email'] ?? null;
 
@@ -24,11 +28,12 @@ if (empty($groupId) || empty($senderEmail)) {
 try {
     // Verificar que el item existe
     $stmt = $pdo->prepare('
-        SELECT * FROM "NewsletterGroupItem"
+        SELECT "senderEmail", "senderName"
+        FROM "NewsletterGroupItem"
         WHERE "groupId" = $1 AND "senderEmail" = $2
     ');
     $stmt->execute([$groupId, $senderEmail]);
-    $item = $stmt->fetch();
+    $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$item) {
         http_response_code(404);
@@ -48,7 +53,7 @@ try {
 
     echo json_encode([
         'success' => true,
-        'message' => 'Newsletter removida del grupo',
+        'message' => 'Newsletter removida del grupo correctamente',
         'removed_item' => [
             'sender_email' => $item['senderEmail'],
             'sender_name' => $item['senderName']

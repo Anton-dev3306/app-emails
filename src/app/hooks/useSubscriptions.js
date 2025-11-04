@@ -1,135 +1,97 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+
+const API = {
+    subscribe: '/api/subscribe',
+    unsubscribe: '/api/unsubscribe',
+    markSpam: '/api/mark-spam',
+    unmarkSpam: '/api/unmark-spam',
+};
 
 export function useSubscriptions(userEmail) {
     const [subscriptionStates, setSubscriptionStates] = useState({});
 
-    const handleSubscriptionToggle = async (subscription) => {
-        const isCurrentlySubscribed = !subscriptionStates[subscription.senderEmail]?.unsubscribed;
-
-        if (subscriptionStates[subscription.senderEmail]?.loading) return;
-
+    const apiRequest = useCallback(async (endpoint, payload) => {
         try {
-            setSubscriptionStates(prev => ({
-                ...prev,
-                [subscription.senderEmail]: {
-                    ...prev[subscription.senderEmail],
-                    loading: true
-                }
-            }));
-
-            const endpoint = isCurrentlySubscribed ? '/api/unsubscribe' : '/api/subscribe';
-
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    senderEmail: subscription.senderEmail,
-                    sender: subscription.sender,
-                    userEmail: userEmail
-                }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
             });
-
-            if (!response.ok) {
-                throw new Error(`Error al ${isCurrentlySubscribed ? 'desuscribir' : 'suscribir'}`);
-            }
-
-            setSubscriptionStates(prev => ({
-                ...prev,
-                [subscription.senderEmail]: {
-                    unsubscribed: isCurrentlySubscribed,
-                    error: false,
-                    loading: false,
-                    markedAsSpam: false
-                }
-            }));
-
-        } catch (error) {
-            console.error('Error:', error);
-            setSubscriptionStates(prev => ({
-                ...prev,
-                [subscription.senderEmail]: {
-                    ...prev[subscription.senderEmail],
-                    error: true,
-                    loading: false
-                }
-            }));
-        }
-    };
-
-    const handleSpamToggle = async (subscription) => {
-        const currentState = subscriptionStates[subscription.senderEmail] || {};
-        const isCurrentlyMarkedAsSpam = currentState.markedAsSpam;
-
-        if (currentState.loadingSpam) return;
-
-        try {
-            setSubscriptionStates(prev => ({
-                ...prev,
-                [subscription.senderEmail]: {
-                    ...prev[subscription.senderEmail],
-                    loadingSpam: true
-                }
-            }));
-
-            const endpoint = isCurrentlyMarkedAsSpam ? '/api/unmark-spam' : '/api/mark-spam';
-
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    senderEmail: subscription.senderEmail,
-                    sender: subscription.sender,
-                    userEmail: userEmail
-                }),
-            });
-
             const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error(data.error || `Error al ${isCurrentlyMarkedAsSpam ? 'desmarcar' : 'marcar'} como spam`);
-            }
+            if (!response.ok)  new Error(data.error || 'Error desconocido');
+            return { success: true, data };
+        } catch (error) {
+            console.error(`Error en ${endpoint}:`, error);
+            return { success: false, error: error.message || 'Error de conexión' };
+        }
+    }, []);
 
-            setSubscriptionStates(prev => ({
-                ...prev,
-                [subscription.senderEmail]: {
-                    ...prev[subscription.senderEmail],
-                    markedAsSpam: !isCurrentlyMarkedAsSpam,
-                    errorSpam: false,
-                    loadingSpam: false,
-                    spamDetails: data.details
-                }
-            }));
+    const updateState = useCallback((email, changes) => {
+        setSubscriptionStates(prev => ({
+            ...prev,
+            [email]: { ...prev[email], ...changes },
+        }));
+    }, []);
 
-            // Mostrar resumen de la operación
-            if (data.details) {
-                const summary = isCurrentlyMarkedAsSpam
+    const handleSubscriptionToggle = useCallback(
+        async (subscription) => {
+            const { senderEmail, sender } = subscription;
+            const current = subscriptionStates[senderEmail] || {};
+            if (current.loading) return;
+
+            const isSubscribed = !current.unsubscribed;
+            updateState(senderEmail, { loading: true, error: false });
+
+            const { success, error } = await apiRequest(
+                isSubscribed ? API.unsubscribe : API.subscribe,
+                { senderEmail, sender, userEmail }
+            );
+
+            updateState(senderEmail, {
+                loading: false,
+                unsubscribed: isSubscribed,
+                error: !success,
+                markedAsSpam: false,
+            });
+
+            if (error) console.error(error);
+        },
+        [subscriptionStates, userEmail, apiRequest, updateState]
+    );
+
+    const handleSpamToggle = useCallback(
+        async (subscription) => {
+            const { senderEmail, sender } = subscription;
+            const current = subscriptionStates[senderEmail] || {};
+            if (current.loadingSpam) return;
+
+            const isSpam = current.markedAsSpam;
+            updateState(senderEmail, { loadingSpam: true, errorSpam: false });
+
+            const { success, data, error } = await apiRequest(
+                isSpam ? API.unmarkSpam : API.markSpam,
+                { senderEmail, sender, userEmail }
+            );
+
+            updateState(senderEmail, {
+                loadingSpam: false,
+                markedAsSpam: !isSpam,
+                errorSpam: !success,
+                spamDetails: data?.details,
+            });
+
+            if (data?.details) {
+                const summary = isSpam
                     ? `✓ ${data.details.restoredToInbox} correos restaurados a la bandeja de entrada`
                     : `✓ ${data.details.markedAsSpam} newsletters marcadas como spam`;
                 alert(summary);
             }
 
-        } catch (error) {
-            console.error('Error:', error);
-            setSubscriptionStates(prev => ({
-                ...prev,
-                [subscription.senderEmail]: {
-                    ...prev[subscription.senderEmail],
-                    errorSpam: true,
-                    loadingSpam: false
-                }
-            }));
+            if (error) alert(error);
+        },
+        [subscriptionStates, userEmail, apiRequest, updateState]
+    );
 
-            alert(error.message || 'Error al procesar la solicitud');
-        }
-    };
-
-    return {
-        subscriptionStates,
-        handleSubscriptionToggle,
-        handleSpamToggle
-    };
+    return { subscriptionStates, handleSubscriptionToggle, handleSpamToggle };
 }

@@ -1,6 +1,7 @@
 <?php
-// update-group.php
 require_once 'db.php';
+
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
     http_response_code(405);
@@ -8,104 +9,88 @@ if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
     exit;
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = json_decode(file_get_contents('php://input'), true) ?? [];
 
-if (empty($input['group_id']) || empty($input['user_email'])) {
+$groupId = $input['group_id'] ?? null;
+$userEmail = $input['user_email'] ?? null;
+
+if (!$groupId || !$userEmail) {
     http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'error' => 'ID de grupo y email de usuario son requeridos'
-    ]);
+    echo json_encode(['success' => false, 'error' => 'ID de grupo y email de usuario son requeridos']);
     exit;
 }
 
-$groupId = $input['group_id'];
-$userEmail = filter_var($input['user_email'], FILTER_SANITIZE_EMAIL);
+$userEmail = filter_var($userEmail, FILTER_SANITIZE_EMAIL);
 
 try {
-    // Verificar que el grupo existe y pertenece al usuario
     $stmt = $pdo->prepare('
-        SELECT * FROM "NewsletterGroup"
+        SELECT id, "groupName", description, color
+        FROM "NewsletterGroup"
         WHERE id = $1 AND "userEmail" = $2
     ');
     $stmt->execute([$groupId, $userEmail]);
-    $group = $stmt->fetch();
+    $group = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$group) {
         http_response_code(404);
-        echo json_encode([
-            'success' => false,
-            'error' => 'Grupo no encontrado'
-        ]);
+        echo json_encode(['success' => false, 'error' => 'Grupo no encontrado']);
         exit;
     }
 
-    // Construir query de actualización
     $updates = [];
-    $params = [$groupId];
-    $paramIndex = 2;
+    $params = [];
+    $paramIndex = 1;
 
-    if (isset($input['group_name']) && !empty($input['group_name'])) {
-        // Verificar que no haya otro grupo con ese nombre
-        $stmt = $pdo->prepare('
+    if (!empty($input['group_name'])) {
+        $newName = trim($input['group_name']);
+        $checkStmt = $pdo->prepare('
             SELECT id FROM "NewsletterGroup"
             WHERE "userEmail" = $1 AND "groupName" = $2 AND id != $3
         ');
-        $stmt->execute([$userEmail, $input['group_name'], $groupId]);
+        $checkStmt->execute([$userEmail, $newName, $groupId]);
 
-        if ($stmt->fetch()) {
+        if ($checkStmt->fetch()) {
             http_response_code(409);
-            echo json_encode([
-                'success' => false,
-                'error' => 'Ya existe un grupo con este nombre'
-            ]);
+            echo json_encode(['success' => false, 'error' => 'Ya existe un grupo con este nombre']);
             exit;
         }
 
-        $updates[] = '"groupName" = $' . $paramIndex;
-        $params[] = trim($input['group_name']);
-        $paramIndex++;
+        $updates[] = '"groupName" = $' . $paramIndex++;
+        $params[] = $newName;
     }
 
-    if (isset($input['description'])) {
-        $updates[] = 'description = $' . $paramIndex;
+    if (array_key_exists('description', $input)) {
+        $updates[] = 'description = $' . $paramIndex++;
         $params[] = $input['description'];
-        $paramIndex++;
     }
 
-    if (isset($input['color'])) {
-        $updates[] = 'color = $' . $paramIndex;
+    if (array_key_exists('color', $input)) {
+        $updates[] = 'color = $' . $paramIndex++;
         $params[] = $input['color'];
-        $paramIndex++;
     }
 
     if (empty($updates)) {
         http_response_code(400);
-        echo json_encode([
-            'success' => false,
-            'error' => 'No se proporcionaron campos para actualizar'
-        ]);
+        echo json_encode(['success' => false, 'error' => 'No se proporcionaron campos para actualizar']);
         exit;
     }
 
-    // Agregar updatedAt
     $updates[] = '"updatedAt" = NOW()';
+    $params[] = $groupId;
 
-    // Ejecutar actualización
-    $sql = 'UPDATE "NewsletterGroup" SET ' . implode(', ', $updates) . ' WHERE id = $1';
+    $sql = 'UPDATE "NewsletterGroup" SET ' . implode(', ', $updates) . ' WHERE id = $' . $paramIndex;
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
 
-    // Obtener grupo actualizado
     $stmt = $pdo->prepare('
         SELECT
-            g.*,
-            (SELECT COUNT(*) FROM "NewsletterGroupItem" WHERE "groupId" = g.id) as newsletter_count
+            g.id, g."groupName", g.description, g.color, g."createdAt", g."updatedAt",
+            (SELECT COUNT(*) FROM "NewsletterGroupItem" WHERE "groupId" = g.id) AS newsletter_count
         FROM "NewsletterGroup" g
         WHERE g.id = $1
     ');
     $stmt->execute([$groupId]);
-    $updatedGroup = $stmt->fetch();
+    $updatedGroup = $stmt->fetch(PDO::FETCH_ASSOC);
 
     echo json_encode([
         'success' => true,

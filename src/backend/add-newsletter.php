@@ -1,6 +1,7 @@
 <?php
-// add-newsletter.php
 require_once 'db.php';
+
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -8,52 +9,44 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = json_decode(file_get_contents('php://input'), true) ?? [];
 
-if (empty($input['group_id']) || empty($input['sender_email'])) {
+$groupId = $input['group_id'] ?? null;
+$senderEmail = $input['sender_email'] ?? null;
+$senderName = $input['sender_name'] ?? null;
+
+if (!$groupId || !$senderEmail) {
     http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'error' => 'ID de grupo y email del remitente son requeridos'
-    ]);
+    echo json_encode(['success' => false, 'error' => 'ID de grupo y email del remitente son requeridos']);
     exit;
 }
 
-$groupId = $input['group_id'];
-$senderEmail = filter_var($input['sender_email'], FILTER_SANITIZE_EMAIL);
-$senderName = $input['sender_name'] ?? null;
+$senderEmail = filter_var($senderEmail, FILTER_SANITIZE_EMAIL);
 
 try {
-    // Verificar que el grupo existe
     $stmt = $pdo->prepare('SELECT id FROM "NewsletterGroup" WHERE id = $1');
     $stmt->execute([$groupId]);
+    $groupExists = $stmt->fetchColumn();
 
-    if (!$stmt->fetch()) {
+    if (!$groupExists) {
         http_response_code(404);
-        echo json_encode([
-            'success' => false,
-            'error' => 'Grupo no encontrado'
-        ]);
+        echo json_encode(['success' => false, 'error' => 'Grupo no encontrado']);
         exit;
     }
 
-    // Verificar si la newsletter ya está en el grupo
     $stmt = $pdo->prepare('
         SELECT id FROM "NewsletterGroupItem"
         WHERE "groupId" = $1 AND "senderEmail" = $2
     ');
     $stmt->execute([$groupId, $senderEmail]);
+    $alreadyExists = $stmt->fetchColumn();
 
-    if ($stmt->fetch()) {
+    if ($alreadyExists) {
         http_response_code(409);
-        echo json_encode([
-            'success' => false,
-            'error' => 'Esta newsletter ya está en el grupo'
-        ]);
+        echo json_encode(['success' => false, 'error' => 'Esta newsletter ya está en el grupo']);
         exit;
     }
 
-    // Agregar newsletter al grupo
     $itemId = generateCuid();
     $stmt = $pdo->prepare('
         INSERT INTO "NewsletterGroupItem" (id, "groupId", "senderEmail", "senderName", "addedAt")
@@ -63,8 +56,13 @@ try {
 
     echo json_encode([
         'success' => true,
-        'message' => 'Newsletter agregada al grupo',
-        'item_id' => $itemId
+        'message' => 'Newsletter agregada exitosamente al grupo',
+        'item' => [
+            'id' => $itemId,
+            'group_id' => $groupId,
+            'sender_email' => $senderEmail,
+            'sender_name' => $senderName
+        ]
     ]);
 
 } catch (PDOException $e) {

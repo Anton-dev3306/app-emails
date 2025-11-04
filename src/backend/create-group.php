@@ -1,85 +1,66 @@
 <?php
-// create-group.php
 require_once 'db.php';
+header('Content-Type: application/json; charset=utf-8');
+
+function respond(int $status, array $data): void {
+    http_response_code($status);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'error' => 'Método no permitido']);
-    exit;
+    respond(405, ['success' => false, 'error' => 'Método no permitido']);
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = json_decode(file_get_contents('php://input'), true) ?? [];
 
-// Validar campos requeridos
-if (empty($input['user_email']) || empty($input['group_name'])) {
-    http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Email de usuario y nombre del grupo son requeridos'
-    ]);
-    exit;
-}
-
-$userEmail = filter_var($input['user_email'], FILTER_SANITIZE_EMAIL);
-$groupName = trim($input['group_name']);
-$description = $input['description'] ?? '';
+$userEmail = filter_var($input['user_email'] ?? '', FILTER_SANITIZE_EMAIL);
+$groupName = trim($input['group_name'] ?? '');
+$description = trim($input['description'] ?? '');
 $color = $input['color'] ?? '#3b82f6';
 $newsletters = $input['newsletters'] ?? [];
 
+if (!$userEmail || !$groupName) {
+    respond(400, ['success' => false, 'error' => 'Email y nombre del grupo son requeridos']);
+}
+
 try {
-    // Verificar que el nombre del grupo no esté duplicado para este usuario
-    $stmt = $pdo->prepare('
-        SELECT id FROM "NewsletterGroup"
-        WHERE "userEmail" = $1 AND "groupName" = $2
-    ');
+    $stmt = $pdo->prepare('SELECT id FROM "NewsletterGroup" WHERE "userEmail" = ? AND "groupName" = ?');
     $stmt->execute([$userEmail, $groupName]);
 
     if ($stmt->fetch()) {
-        http_response_code(409);
-        echo json_encode([
-            'success' => false,
-            'error' => 'Ya existe un grupo con este nombre'
-        ]);
-        exit;
+        respond(409, ['success' => false, 'error' => 'Ya existe un grupo con este nombre']);
     }
-
-    // Generar ID
     $groupId = generateCuid();
-
-    // Insertar grupo
-    $stmt = $pdo->prepare('
+    $pdo->prepare('
         INSERT INTO "NewsletterGroup" (id, "userEmail", "groupName", description, color, "createdAt", "updatedAt")
-        VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
-        RETURNING id
-    ');
-    $stmt->execute([$groupId, $userEmail, $groupName, $description, $color]);
+        VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+    ')->execute([$groupId, $userEmail, $groupName, $description, $color]);
 
-    // Agregar newsletters al grupo (si se proporcionaron)
-    $addedNewsletters = 0;
-    if (!empty($newsletters)) {
+    $added = 0;
+    if ($newsletters) {
         $stmt = $pdo->prepare('
             INSERT INTO "NewsletterGroupItem" (id, "groupId", "senderEmail", "senderName", "addedAt")
-            VALUES ($1, $2, $3, $4, NOW())
+            VALUES (?, ?, ?, ?, NOW())
             ON CONFLICT ("groupId", "senderEmail") DO NOTHING
         ');
 
-        foreach ($newsletters as $newsletter) {
+        foreach ($newsletters as $n) {
+            if (empty($n['sender_email'])) continue;
+
             try {
-                $itemId = generateCuid();
                 $stmt->execute([
-                    $itemId,
+                    generateCuid(),
                     $groupId,
-                    $newsletter['sender_email'],
-                    $newsletter['sender_name'] ?? null
+                    $n['sender_email'],
+                    $n['sender_name'] ?? null
                 ]);
-                $addedNewsletters++;
-            } catch (PDOException $e) {
-                continue;
+                $added++;
+            } catch (PDOException) {
             }
         }
     }
-
-    echo json_encode([
+    respond(200, [
         'success' => true,
         'message' => 'Grupo creado exitosamente',
         'group' => [
@@ -87,15 +68,13 @@ try {
             'group_name' => $groupName,
             'description' => $description,
             'color' => $color,
-            'newsletters_added' => $addedNewsletters
+            'newsletters_added' => $added,
         ]
     ]);
 
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
+    respond(500, [
         'success' => false,
         'error' => 'Error al crear el grupo: ' . $e->getMessage()
     ]);
 }
-?>
