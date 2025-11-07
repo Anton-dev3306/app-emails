@@ -28,6 +28,9 @@ export default function DashboardView({
                                           onAddToGroup,
                                           onRemoveFromGroup
                                       }) {
+    console.log('[DashboardView] Grupos recibidos:', groups);
+    console.log('[DashboardView] Total:', groups?.length);
+
     const [selectedGroupId, setSelectedGroupId] = useState('all');
 
     // Filtrar newsletters según el grupo seleccionado

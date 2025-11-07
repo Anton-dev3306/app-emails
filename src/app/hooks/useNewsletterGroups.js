@@ -1,14 +1,13 @@
 // hooks/useNewsletterGroups.js
 import { useState, useEffect } from 'react';
 
-const API_URL = 'http://localhost/backend-php'; // ⚠️ CAMBIA ESTO a la URL de tu backend PHP
+const API_URL = 'http://localhost/aplicacion_emails/app-emails/src/backend';
 
 export function useNewsletterGroups(userEmail) {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Cargar grupos automáticamente cuando hay un email
     useEffect(() => {
         if (userEmail) {
             fetchGroups();
@@ -18,7 +17,6 @@ export function useNewsletterGroups(userEmail) {
         }
     }, [userEmail]);
 
-    // READ - Obtener todos los grupos del usuario
     const fetchGroups = async () => {
         if (!userEmail) return;
 
@@ -44,7 +42,6 @@ export function useNewsletterGroups(userEmail) {
         }
     };
 
-    // CREATE - Crear nuevo grupo
     const createGroup = async (groupName, description = '', color = '#3b82f6', newsletters = []) => {
         if (!userEmail) {
             return { success: false, error: 'Email de usuario no disponible' };
@@ -68,7 +65,6 @@ export function useNewsletterGroups(userEmail) {
             const data = await response.json();
 
             if (data.success) {
-                // Recargar grupos después de crear
                 await fetchGroups();
                 return { success: true, group: data.group };
             } else {
@@ -80,7 +76,6 @@ export function useNewsletterGroups(userEmail) {
         }
     };
 
-    // UPDATE - Actualizar grupo existente
     const updateGroup = async (groupId, updates) => {
         if (!userEmail) {
             return { success: false, error: 'Email de usuario no disponible' };
@@ -102,7 +97,6 @@ export function useNewsletterGroups(userEmail) {
             const data = await response.json();
 
             if (data.success) {
-                // Recargar grupos después de actualizar
                 await fetchGroups();
                 return { success: true, group: data.group };
             } else {
@@ -114,7 +108,6 @@ export function useNewsletterGroups(userEmail) {
         }
     };
 
-    // DELETE - Eliminar grupo
     const deleteGroup = async (groupId) => {
         if (!userEmail) {
             return { success: false, error: 'Email de usuario no disponible' };
@@ -135,7 +128,6 @@ export function useNewsletterGroups(userEmail) {
             const data = await response.json();
 
             if (data.success) {
-                // Recargar grupos después de eliminar
                 await fetchGroups();
                 return { success: true };
             } else {
@@ -147,7 +139,6 @@ export function useNewsletterGroups(userEmail) {
         }
     };
 
-    // Agregar newsletter a un grupo
     const addNewsletterToGroup = async (groupId, senderEmail, senderName = null) => {
         try {
             const response = await fetch(`${API_URL}/add-newsletter.php`, {
@@ -165,7 +156,6 @@ export function useNewsletterGroups(userEmail) {
             const data = await response.json();
 
             if (data.success) {
-                // Recargar grupos para reflejar el cambio
                 await fetchGroups();
                 return { success: true };
             } else {
@@ -177,7 +167,6 @@ export function useNewsletterGroups(userEmail) {
         }
     };
 
-    // Remover newsletter de un grupo
     const removeNewsletterFromGroup = async (groupId, senderEmail) => {
         try {
             const response = await fetch(`${API_URL}/remove-newsletter.php`, {
@@ -192,25 +181,28 @@ export function useNewsletterGroups(userEmail) {
             });
 
             const data = await response.json();
+
+            if (data.success) {
+                await fetchGroups();
+                return { success: true };
+            } else {
+                return { success: false, error: data.error || 'Error al remover newsletter' };
+            }
+        } catch (err) {
+            console.error('Error removing newsletter:', err);
             return { success: false, error: 'Error de conexión al remover newsletter' };
         }
+    };
 
     return {
-        // Estado
         groups,
         loading,
         error,
-
-        // Acciones CRUD
         createGroup,
         updateGroup,
         deleteGroup,
-
-        // Acciones de newsletters en grupos
         addNewsletterToGroup,
         removeNewsletterFromGroup,
-
-        // Utilidades
         refreshGroups: fetchGroups
     };
 }

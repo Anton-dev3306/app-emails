@@ -10,6 +10,10 @@ export default function GroupManagementPanel({
                                                  onDeleteGroup,
                                                  onRemoveFromGroup
                                              }) {
+    console.log('[Panel] Grupos recibidos:', groups);
+    console.log('[Panel] Es array?:', Array.isArray(groups));
+    console.log('[Panel] Total:', groups?.length);
+
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingGroup, setEditingGroup] = useState(null);
@@ -111,7 +115,7 @@ export default function GroupManagementPanel({
                     </Dialog.Root>
                 </Flex>
 
-                {groups.length === 0 ? (
+                {!groups || groups.length === 0 ? (
                     <Text size="2" color="gray">No tienes grupos. ¡Crea uno!</Text>
                 ) : (
                     <Flex direction="column" gap="2">

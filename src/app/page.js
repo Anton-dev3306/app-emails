@@ -40,7 +40,9 @@ export default function Home() {
         addNewsletterToGroup,
         removeNewsletterFromGroup
     } = useNewsletterGroups(session?.user?.email);
-
+    console.log('[page.js] Email:', session?.user?.email);
+    console.log('[page.js] Grupos:', groups);
+    console.log('[page.js] Total grupos:', groups?.length);
     // Manejador de inicio de sesión
     const handleGetStarted = async () => {
         try {
