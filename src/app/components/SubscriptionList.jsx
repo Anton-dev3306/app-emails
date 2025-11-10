@@ -1,7 +1,6 @@
 "use client";
 import { Box, Text, Flex } from "@radix-ui/themes";
 import SubscriptionCard from './SubscriptionCard';
-
 export default function SubscriptionList({
                                              subscriptions,
                                              subscriptionStates,

@@ -23,9 +23,13 @@ if (!$groupId || !$senderEmail) {
 
 $senderEmail = filter_var($senderEmail, FILTER_SANITIZE_EMAIL);
 
+// Log para debugging
+error_log("ADD NEWSLETTER - Group: $groupId, Email: $senderEmail, Name: $senderName");
+
 try {
-    $stmt = $pdo->prepare('SELECT id FROM "NewsletterGroup" WHERE id = $1');
-    $stmt->execute([$groupId]);
+    // Verificar que el grupo existe
+    $stmt = $pdo->prepare('SELECT id FROM "NewsletterGroup" WHERE id = :groupId');
+    $stmt->execute([':groupId' => $groupId]);
     $groupExists = $stmt->fetchColumn();
 
     if (!$groupExists) {
@@ -34,11 +38,15 @@ try {
         exit;
     }
 
+    // Verificar si la newsletter ya está en el grupo
     $stmt = $pdo->prepare('
         SELECT id FROM "NewsletterGroupItem"
-        WHERE "groupId" = $1 AND "senderEmail" = $2
+        WHERE "groupId" = :groupId AND "senderEmail" = :senderEmail
     ');
-    $stmt->execute([$groupId, $senderEmail]);
+    $stmt->execute([
+        ':groupId' => $groupId,
+        ':senderEmail' => $senderEmail
+    ]);
     $alreadyExists = $stmt->fetchColumn();
 
     if ($alreadyExists) {
@@ -47,25 +55,33 @@ try {
         exit;
     }
 
+    // Insertar la newsletter en el grupo
     $itemId = generateCuid();
     $stmt = $pdo->prepare('
-        INSERT INTO "NewsletterGroupItem" (id, "groupId", "senderEmail", "senderName", "addedAt")
-        VALUES ($1, $2, $3, $4, NOW())
+        INSERT INTO "NewsletterGroupItem"
+        (id, "groupId", "senderEmail", "senderName", "addedAt")
+        VALUES (:id, :groupId, :senderEmail, :senderName, NOW())
+        RETURNING id, "groupId", "senderEmail", "senderName", "addedAt"
     ');
-    $stmt->execute([$itemId, $groupId, $senderEmail, $senderName]);
+    $stmt->execute([
+        ':id' => $itemId,
+        ':groupId' => $groupId,
+        ':senderEmail' => $senderEmail,
+        ':senderName' => $senderName
+    ]);
+
+    $insertedItem = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    error_log("ADD NEWSLETTER SUCCESS - Item ID: $itemId");
 
     echo json_encode([
         'success' => true,
         'message' => 'Newsletter agregada exitosamente al grupo',
-        'item' => [
-            'id' => $itemId,
-            'group_id' => $groupId,
-            'sender_email' => $senderEmail,
-            'sender_name' => $senderName
-        ]
+        'item' => $insertedItem
     ]);
 
 } catch (PDOException $e) {
+    error_log("ADD NEWSLETTER ERROR: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,

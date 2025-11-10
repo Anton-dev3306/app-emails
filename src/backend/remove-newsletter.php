@@ -1,5 +1,4 @@
 <?php
-// remove-newsletter.php
 require_once 'db.php';
 
 header('Content-Type: application/json; charset=utf-8');
@@ -10,9 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     exit;
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = json_decode(file_get_contents('php://input'), true) ?? [];
 
-// Permitir que los parámetros también lleguen por GET si se desea
+// Permitir que los parámetros también lleguen por GET
 $groupId = $input['group_id'] ?? $_GET['group_id'] ?? null;
 $senderEmail = $input['sender_email'] ?? $_GET['sender_email'] ?? null;
 
@@ -25,14 +24,22 @@ if (empty($groupId) || empty($senderEmail)) {
     exit;
 }
 
+$senderEmail = filter_var($senderEmail, FILTER_SANITIZE_EMAIL);
+
+// Log para debugging
+error_log("REMOVE NEWSLETTER - Group: $groupId, Email: $senderEmail");
+
 try {
     // Verificar que el item existe
     $stmt = $pdo->prepare('
-        SELECT "senderEmail", "senderName"
+        SELECT id, "senderEmail", "senderName"
         FROM "NewsletterGroupItem"
-        WHERE "groupId" = $1 AND "senderEmail" = $2
+        WHERE "groupId" = :groupId AND "senderEmail" = :senderEmail
     ');
-    $stmt->execute([$groupId, $senderEmail]);
+    $stmt->execute([
+        ':groupId' => $groupId,
+        ':senderEmail' => $senderEmail
+    ]);
     $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$item) {
@@ -47,20 +54,29 @@ try {
     // Eliminar newsletter del grupo
     $stmt = $pdo->prepare('
         DELETE FROM "NewsletterGroupItem"
-        WHERE "groupId" = $1 AND "senderEmail" = $2
+        WHERE "groupId" = :groupId AND "senderEmail" = :senderEmail
     ');
-    $stmt->execute([$groupId, $senderEmail]);
+    $stmt->execute([
+        ':groupId' => $groupId,
+        ':senderEmail' => $senderEmail
+    ]);
+
+    $deletedCount = $stmt->rowCount();
+
+    error_log("REMOVE NEWSLETTER SUCCESS - Deleted: $deletedCount");
 
     echo json_encode([
         'success' => true,
         'message' => 'Newsletter removida del grupo correctamente',
         'removed_item' => [
+            'id' => $item['id'],
             'sender_email' => $item['senderEmail'],
             'sender_name' => $item['senderName']
         ]
     ]);
 
 } catch (PDOException $e) {
+    error_log("REMOVE NEWSLETTER ERROR: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,

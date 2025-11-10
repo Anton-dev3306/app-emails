@@ -20,16 +20,23 @@ if (!$userEmail) {
 
 $userEmail = filter_var($userEmail, FILTER_SANITIZE_EMAIL);
 
+// Log para debugging
+error_log("READ GROUPS - User Email: " . $userEmail);
+
 try {
+    // Si se solicita un grupo específico
     if ($groupId) {
         $stmt = $pdo->prepare('
             SELECT
                 g.id, g."groupName", g.description, g.color, g."createdAt", g."updatedAt",
                 (SELECT COUNT(*) FROM "NewsletterGroupItem" WHERE "groupId" = g.id) AS newsletter_count
             FROM "NewsletterGroup" g
-            WHERE g.id = $1 AND g."userEmail" = $2
+            WHERE g.id = :groupId AND g."userEmail" = :userEmail
         ');
-        $stmt->execute([$groupId, $userEmail]);
+        $stmt->execute([
+            ':groupId' => $groupId,
+            ':userEmail' => $userEmail
+        ]);
         $group = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$group) {
@@ -38,45 +45,61 @@ try {
             exit;
         }
 
+        // Obtener newsletters del grupo
         $stmt = $pdo->prepare('
             SELECT id, "senderEmail", "senderName", "addedAt"
             FROM "NewsletterGroupItem"
-            WHERE "groupId" = $1
+            WHERE "groupId" = :groupId
             ORDER BY "addedAt" DESC
         ');
-        $stmt->execute([$groupId]);
+        $stmt->execute([':groupId' => $groupId]);
         $group['newsletters'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         echo json_encode(['success' => true, 'group' => $group]);
         exit;
     }
 
+    // Obtener todos los grupos del usuario
     $stmt = $pdo->prepare('
         SELECT
-            g.id, g."groupName", g.description, g.color, g."createdAt", g."updatedAt",
+            g.id,
+            g."groupName",
+            g.description,
+            g.color,
+            g."createdAt",
+            g."updatedAt",
             (SELECT COUNT(*) FROM "NewsletterGroupItem" WHERE "groupId" = g.id) AS newsletter_count
         FROM "NewsletterGroup" g
-        WHERE g."userEmail" = $1
+        WHERE g."userEmail" = :userEmail
         ORDER BY g."createdAt" DESC
     ');
-    $stmt->execute([$userEmail]);
+
+    $stmt->execute([':userEmail' => $userEmail]);
     $groups = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (!$groups) {
+    // Log para debugging
+    error_log("READ GROUPS - Grupos encontrados: " . count($groups));
+
+    // Si no hay grupos, retornar array vacío
+    if (empty($groups)) {
         echo json_encode(['success' => true, 'total' => 0, 'groups' => []]);
         exit;
     }
 
+    // Obtener newsletters para cada grupo
     $newsletterStmt = $pdo->prepare('
         SELECT id, "senderEmail", "senderName", "addedAt"
         FROM "NewsletterGroupItem"
-        WHERE "groupId" = $1
+        WHERE "groupId" = :groupId
         ORDER BY "addedAt" DESC
     ');
 
     foreach ($groups as &$group) {
-        $newsletterStmt->execute([$group['id']]);
+        $newsletterStmt->execute([':groupId' => $group['id']]);
         $group['newsletters'] = $newsletterStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Log para debugging
+        error_log("Grupo: " . $group['groupName'] . " - Newsletters: " . count($group['newsletters']));
     }
 
     echo json_encode([
@@ -86,6 +109,7 @@ try {
     ]);
 
 } catch (PDOException $e) {
+    error_log("READ GROUPS ERROR: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,

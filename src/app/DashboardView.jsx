@@ -22,6 +22,8 @@ export default function DashboardView({
                                           onToggleSubscription,
                                           onToggleSpam,
                                           groups,
+                                          groupsLoading,
+                                          groupsError,
                                           onCreateGroup,
                                           onUpdateGroup,
                                           onDeleteGroup,
@@ -30,6 +32,7 @@ export default function DashboardView({
                                       }) {
     console.log('[DashboardView] Grupos recibidos:', groups);
     console.log('[DashboardView] Total:', groups?.length);
+    console.log('[DashboardView] Loading:', groupsLoading);
 
     const [selectedGroupId, setSelectedGroupId] = useState('all');
 
@@ -39,7 +42,7 @@ export default function DashboardView({
             return subscriptions;
         }
 
-        const selectedGroup = groups.find(g => g.id === selectedGroupId);
+        const selectedGroup = groups?.find(g => g.id === selectedGroupId);
         if (!selectedGroup || !selectedGroup.newsletters) {
             return [];
         }
@@ -58,10 +61,10 @@ export default function DashboardView({
                             <Box>
                                 <GroupManagementPanel
                                     groups={groups}
+                                    loading={groupsLoading}
                                     onCreateGroup={onCreateGroup}
                                     onUpdateGroup={onUpdateGroup}
                                     onDeleteGroup={onDeleteGroup}
-                                    onRemoveFromGroup={onRemoveFromGroup}
                                 />
                             </Box>
 
@@ -77,14 +80,13 @@ export default function DashboardView({
 
                                     <Separator size="4" mb="6" />
 
-                                    {/* Selector de grupo y botón analizar */}
                                     <Flex justify="between" align="center" gap="3" mb="4">
-                                        {/* Selector de grupo y botón analizar
+
                                         <GroupSelector
                                             groups={groups}
                                             selectedGroup={selectedGroupId}
                                             onSelectGroup={setSelectedGroupId}
-                                        /> */}
+                                        />
                                         <AnalyzeButton
                                             isAnalyzing={isAnalyzing}
                                             onAnalyze={onAnalyze}

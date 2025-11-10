@@ -21,17 +21,25 @@ if (!$groupId || !$userEmail) {
 
 $userEmail = filter_var($userEmail, FILTER_SANITIZE_EMAIL);
 
+// Log para debugging
+error_log("DELETE GROUP - Group ID: $groupId, User: $userEmail");
+
 try {
     $pdo->beginTransaction();
 
+    // Verificar que el grupo existe y pertenece al usuario
     $stmt = $pdo->prepare('
         SELECT
-            g.id, g."groupName",
+            g.id,
+            g."groupName",
             (SELECT COUNT(*) FROM "NewsletterGroupItem" WHERE "groupId" = g.id) AS newsletter_count
         FROM "NewsletterGroup" g
-        WHERE g.id = $1 AND g."userEmail" = $2
+        WHERE g.id = :groupId AND g."userEmail" = :userEmail
     ');
-    $stmt->execute([$groupId, $userEmail]);
+    $stmt->execute([
+        ':groupId' => $groupId,
+        ':userEmail' => $userEmail
+    ]);
     $group = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$group) {
@@ -41,10 +49,26 @@ try {
         exit;
     }
 
-    $deleteStmt = $pdo->prepare('DELETE FROM "NewsletterGroup" WHERE id = $1');
-    $deleteStmt->execute([$groupId]);
+    // Primero eliminar todos los items del grupo (newsletters asociadas)
+    $deleteItemsStmt = $pdo->prepare('
+        DELETE FROM "NewsletterGroupItem"
+        WHERE "groupId" = :groupId
+    ');
+    $deleteItemsStmt->execute([':groupId' => $groupId]);
+    $deletedItems = $deleteItemsStmt->rowCount();
+
+    error_log("Deleted $deletedItems newsletter items from group");
+
+    // Luego eliminar el grupo
+    $deleteGroupStmt = $pdo->prepare('
+        DELETE FROM "NewsletterGroup"
+        WHERE id = :groupId
+    ');
+    $deleteGroupStmt->execute([':groupId' => $groupId]);
 
     $pdo->commit();
+
+    error_log("DELETE GROUP SUCCESS - Group: " . $group['groupName']);
 
     echo json_encode([
         'success' => true,
@@ -52,7 +76,7 @@ try {
         'deleted_group' => [
             'id' => $group['id'],
             'group_name' => $group['groupName'],
-            'newsletters_removed' => (int) $group['newsletter_count']
+            'newsletters_removed' => (int) $deletedItems
         ]
     ]);
 
@@ -61,6 +85,7 @@ try {
         $pdo->rollBack();
     }
 
+    error_log("DELETE GROUP ERROR: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,

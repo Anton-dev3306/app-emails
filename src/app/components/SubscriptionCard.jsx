@@ -2,6 +2,7 @@
 import { Card, Flex, Text, Box, Badge, Button } from "@radix-ui/themes";
 import { Loader, AlertTriangle, RefreshCw, Trash2, ShieldOff, Ban } from 'lucide-react';
 import AddToGroupButton from './AddToGroupButton';
+import RemoveFromGroupButton from './RemoveFromGroupButton';
 
 export default function SubscriptionCard({
                                              subscription,
@@ -9,7 +10,8 @@ export default function SubscriptionCard({
                                              onToggleSubscription,
                                              onToggleSpam,
                                              groups = [],
-                                             onAddToGroup
+                                             onAddToGroup,
+                                             onRemoveFromGroup
                                          }) {
     const isUnsubscribed = state.unsubscribed;
     const isMarkedAsSpam = state.markedAsSpam;
@@ -43,16 +45,25 @@ export default function SubscriptionCard({
                 </Box>
 
                 <Flex direction="column" gap="2" style={{ flexShrink: 0 }}>
-                    {/* Botón agregar a grupo */}
                     {groups.length > 0 && (
-                        <AddToGroupButton
-                            subscription={subscription}
-                            groups={groups}
-                            onAddToGroup={onAddToGroup}
-                        />
+                        <>
+                            {/* Botón agregar a grupo */}
+                            <AddToGroupButton
+                                subscription={subscription}
+                                groups={groups}
+                                onAddToGroup={onAddToGroup}
+                            />
+
+                            {/* Botón remover de grupo */}
+                            <RemoveFromGroupButton
+                                subscription={subscription}
+                                groups={groups}
+                                onRemoveFromGroup={onRemoveFromGroup}
+                            />
+                        </>
                     )}
 
-                    {/* Botón de Desuscribir/Suscribir */}
+                    {/* Botón de Desuscribir/Suscribir
                     <Button
                         onClick={() => onToggleSubscription(subscription)}
                         disabled={state.loading}
@@ -82,7 +93,7 @@ export default function SubscriptionCard({
                             </Flex>
                         )}
                     </Button>
-
+*/}
                     {/* Botón de Marcar/Desmarcar Spam */}
                     <Button
                         onClick={() => onToggleSpam(subscription)}

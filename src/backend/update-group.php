@@ -22,13 +22,20 @@ if (!$groupId || !$userEmail) {
 
 $userEmail = filter_var($userEmail, FILTER_SANITIZE_EMAIL);
 
+// Log para debugging
+error_log("UPDATE GROUP - Group ID: $groupId, User: $userEmail");
+
 try {
+    // Verificar que el grupo existe y pertenece al usuario
     $stmt = $pdo->prepare('
         SELECT id, "groupName", description, color
         FROM "NewsletterGroup"
-        WHERE id = $1 AND "userEmail" = $2
+        WHERE id = :groupId AND "userEmail" = :userEmail
     ');
-    $stmt->execute([$groupId, $userEmail]);
+    $stmt->execute([
+        ':groupId' => $groupId,
+        ':userEmail' => $userEmail
+    ]);
     $group = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$group) {
@@ -37,17 +44,26 @@ try {
         exit;
     }
 
+    // Preparar campos a actualizar
     $updates = [];
-    $params = [];
-    $paramIndex = 1;
+    $params = [':groupId' => $groupId];
 
+    // Actualizar nombre del grupo
     if (!empty($input['group_name'])) {
         $newName = trim($input['group_name']);
+
+        // Verificar que no exista otro grupo con el mismo nombre
         $checkStmt = $pdo->prepare('
             SELECT id FROM "NewsletterGroup"
-            WHERE "userEmail" = $1 AND "groupName" = $2 AND id != $3
+            WHERE "userEmail" = :userEmail
+            AND "groupName" = :groupName
+            AND id != :groupId
         ');
-        $checkStmt->execute([$userEmail, $newName, $groupId]);
+        $checkStmt->execute([
+            ':userEmail' => $userEmail,
+            ':groupName' => $newName,
+            ':groupId' => $groupId
+        ]);
 
         if ($checkStmt->fetch()) {
             http_response_code(409);
@@ -55,18 +71,20 @@ try {
             exit;
         }
 
-        $updates[] = '"groupName" = $' . $paramIndex++;
-        $params[] = $newName;
+        $updates[] = '"groupName" = :groupName';
+        $params[':groupName'] = $newName;
     }
 
+    // Actualizar descripción
     if (array_key_exists('description', $input)) {
-        $updates[] = 'description = $' . $paramIndex++;
-        $params[] = $input['description'];
+        $updates[] = 'description = :description';
+        $params[':description'] = $input['description'];
     }
 
+    // Actualizar color
     if (array_key_exists('color', $input)) {
-        $updates[] = 'color = $' . $paramIndex++;
-        $params[] = $input['color'];
+        $updates[] = 'color = :color';
+        $params[':color'] = $input['color'];
     }
 
     if (empty($updates)) {
@@ -75,22 +93,35 @@ try {
         exit;
     }
 
+    // Agregar updatedAt
     $updates[] = '"updatedAt" = NOW()';
-    $params[] = $groupId;
 
-    $sql = 'UPDATE "NewsletterGroup" SET ' . implode(', ', $updates) . ' WHERE id = $' . $paramIndex;
+    // Construir y ejecutar la consulta de actualización
+    $sql = 'UPDATE "NewsletterGroup" SET ' . implode(', ', $updates) . ' WHERE id = :groupId';
+
+    error_log("UPDATE QUERY: $sql");
+    error_log("PARAMS: " . json_encode($params));
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
 
+    // Obtener el grupo actualizado con el conteo de newsletters
     $stmt = $pdo->prepare('
         SELECT
-            g.id, g."groupName", g.description, g.color, g."createdAt", g."updatedAt",
+            g.id,
+            g."groupName",
+            g.description,
+            g.color,
+            g."createdAt",
+            g."updatedAt",
             (SELECT COUNT(*) FROM "NewsletterGroupItem" WHERE "groupId" = g.id) AS newsletter_count
         FROM "NewsletterGroup" g
-        WHERE g.id = $1
+        WHERE g.id = :groupId
     ');
-    $stmt->execute([$groupId]);
+    $stmt->execute([':groupId' => $groupId]);
     $updatedGroup = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    error_log("UPDATE GROUP SUCCESS - Group: " . $updatedGroup['groupName']);
 
     echo json_encode([
         'success' => true,
@@ -99,6 +130,7 @@ try {
     ]);
 
 } catch (PDOException $e) {
+    error_log("UPDATE GROUP ERROR: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,
