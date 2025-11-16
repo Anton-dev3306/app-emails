@@ -29,6 +29,7 @@ export default function SubscriptionList({
                             onToggleSpam={onToggleSpam}
                             groups={groups}
                             onAddToGroup={onAddToGroup}
+                            onRemoveFromGroup={onRemoveFromGroup}
                         />
                     );
                 })}
