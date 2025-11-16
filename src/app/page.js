@@ -82,7 +82,7 @@ export default function Home() {
 
     // Manejador para eliminar grupo con confirmación
     const handleDeleteGroup = async (groupId) => {
-        if (!confirm('¿Estás seguro de eliminar este grupo? Se eliminarán todas las newsletters asociadas.')) {
+        if (!confirm('¿Estás seguro de que quieres eliminar este grupo?.')) {
             return;
         }
 
