@@ -7,7 +7,8 @@ export default function SubscriptionList({
                                              onToggleSubscription,
                                              onToggleSpam,
                                              groups = [],
-                                             onAddToGroup
+                                             onAddToGroup,
+                                             onRemoveFromGroup
                                          }) {
     if (subscriptions.length === 0) return null;
 
