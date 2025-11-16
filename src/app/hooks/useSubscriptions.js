@@ -84,7 +84,7 @@ export function useSubscriptions(userEmail) {
             if (data?.details) {
                 const summary = isSpam
                     ? `✓ ${data.details.restoredToInbox} correos restaurados a la bandeja de entrada`
-                    : `✓ ${data.details.markedAsSpam} newsletters marcadas como spam`;
+                    : `✓ ${data.details.markedAsSpam} correos marcados como spam`;
                 alert(summary);
             }
 
