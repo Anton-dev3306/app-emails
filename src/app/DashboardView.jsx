@@ -102,7 +102,7 @@ export default function DashboardView({
                                         onToggleSpam={onToggleSpam}
                                         groups={groups}
                                         onAddToGroup={onAddToGroup}
-                                        onRemoveFromGroup={onRemoveFromGroup}   // <── SE AGREGA AQUÍ
+                                        onRemoveFromGroup={onRemoveFromGroup}
                                     />
                                 </Card>
                             </Box>
