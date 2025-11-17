@@ -63,37 +63,6 @@ export default function SubscriptionCard({
                         </>
                     )}
 
-                    {/* Botón de Desuscribir/Suscribir
-                    <Button
-                        onClick={() => onToggleSubscription(subscription)}
-                        disabled={state.loading}
-                        color={isUnsubscribed ? "green" : "red"}
-                        variant="soft"
-                        size="2"
-                    >
-                        {state.loading ? (
-                            <Flex align="center" gap="2">
-                                <Loader className="animate-spin h-4 w-4" />
-                                Procesando...
-                            </Flex>
-                        ) : state.error ? (
-                            <Flex align="center" gap="2">
-                                <AlertTriangle className="h-4 w-4" />
-                                Reintentar
-                            </Flex>
-                        ) : isUnsubscribed ? (
-                            <Flex align="center" gap="2">
-                                <RefreshCw className="h-4 w-4" />
-                                Suscribirse
-                            </Flex>
-                        ) : (
-                            <Flex align="center" gap="2">
-                                <Trash2 className="h-4 w-4" />
-                                Desuscribirse
-                            </Flex>
-                        )}
-                    </Button>
-*/}
                     {/* Botón de Marcar/Desmarcar Spam */}
                     <Button
                         onClick={() => onToggleSpam(subscription)}

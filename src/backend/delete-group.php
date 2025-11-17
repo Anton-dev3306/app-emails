@@ -21,13 +21,11 @@ if (!$groupId || !$userEmail) {
 
 $userEmail = filter_var($userEmail, FILTER_SANITIZE_EMAIL);
 
-// Log para debugging
 error_log("DELETE GROUP - Group ID: $groupId, User: $userEmail");
 
 try {
     $pdo->beginTransaction();
 
-    // Verificar que el grupo existe y pertenece al usuario
     $stmt = $pdo->prepare('
         SELECT
             g.id,
@@ -49,7 +47,6 @@ try {
         exit;
     }
 
-    // Primero eliminar todos los items del grupo (newsletters asociadas)
     $deleteItemsStmt = $pdo->prepare('
         DELETE FROM "NewsletterGroupItem"
         WHERE "groupId" = :groupId

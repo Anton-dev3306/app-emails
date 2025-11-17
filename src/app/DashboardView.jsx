@@ -28,27 +28,27 @@ export default function DashboardView({
                                           onUpdateGroup,
                                           onDeleteGroup,
                                           onAddToGroup,
-                                          onRemoveFromGroup
+                                          onRemoveFromGroup     // <── SE AGREGA A LAS PROPS
                                       }) {
-    console.log('[DashboardView] Grupos recibidos:', groups);
-    console.log('[DashboardView] Total:', groups?.length);
-    console.log('[DashboardView] Loading:', groupsLoading);
-
     const [selectedGroupId, setSelectedGroupId] = useState('all');
 
-    // Filtrar newsletters según el grupo seleccionado
+
     const filteredSubscriptions = useMemo(() => {
         if (selectedGroupId === 'all') {
             return subscriptions;
         }
 
         const selectedGroup = groups?.find(g => g.id === selectedGroupId);
+
         if (!selectedGroup || !selectedGroup.newsletters) {
             return [];
         }
 
-        const groupEmails = new Set(selectedGroup.newsletters.map(n => n.senderEmail));
-        return subscriptions.filter(sub => groupEmails.has(sub.senderEmail));
+        const emails = new Set(
+            selectedGroup.newsletters.map(n => n.senderEmail) // Asegura consistencia
+        );
+
+        return subscriptions.filter(sub => emails.has(sub.senderEmail));
     }, [subscriptions, selectedGroupId, groups]);
 
     return (
@@ -57,7 +57,8 @@ export default function DashboardView({
                 <Container>
                     <Box py="6">
                         <Grid columns={{ initial: '1', md: '3' }} gap="4">
-                            {/* Columna izquierda: Panel de grupos (1/3) */}
+
+                            {/* PANEL IZQUIERDO: GESTIÓN DE GRUPOS */}
                             <Box>
                                 <GroupManagementPanel
                                     groups={groups}
@@ -68,9 +69,10 @@ export default function DashboardView({
                                 />
                             </Box>
 
-                            {/* Columna derecha: Dashboard principal (2/3) */}
+                            {/* PANEL PRINCIPAL */}
                             <Box style={{ gridColumn: 'span 2' }}>
                                 <Card size="4">
+
                                     <DashboardHeader
                                         session={session}
                                         onSignOut={onSignOut}
@@ -81,7 +83,6 @@ export default function DashboardView({
                                     <Separator size="4" mb="6" />
 
                                     <Flex justify="between" align="center" gap="3" mb="4">
-
                                         <GroupSelector
                                             groups={groups}
                                             selectedGroup={selectedGroupId}
@@ -95,6 +96,7 @@ export default function DashboardView({
 
                                     <StatusMessage status={analysisStatus} />
 
+                                    {/* LISTA DE NEWSLETTERS */}
                                     <SubscriptionList
                                         subscriptions={filteredSubscriptions}
                                         subscriptionStates={subscriptionStates}

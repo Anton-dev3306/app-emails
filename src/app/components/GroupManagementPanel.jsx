@@ -10,10 +10,6 @@ export default function GroupManagementPanel({
                                                  onDeleteGroup,
                                                  loading = false
                                              }) {
-    console.log('[Panel] Grupos recibidos:', groups);
-    console.log('[Panel] Es array?:', Array.isArray(groups));
-    console.log('[Panel] Total:', groups?.length);
-    console.log('[Panel] Loading:', loading);
 
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);

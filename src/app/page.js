@@ -43,13 +43,6 @@ export default function Home() {
         removeNewsletterFromGroup
     } = useNewsletterGroups(session?.user?.email);
 
-    // Logs de debugging
-    console.log('[page.js] Email:', session?.user?.email);
-    console.log('[page.js] Grupos:', groups);
-    console.log('[page.js] Total grupos:', groups?.length);
-    console.log('[page.js] Groups loading:', groupsLoading);
-    console.log('[page.js] Groups error:', groupsError);
-
     // Manejador de inicio de sesión
     const handleGetStarted = async () => {
         try {
