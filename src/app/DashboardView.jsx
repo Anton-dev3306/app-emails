@@ -69,7 +69,6 @@ export default function DashboardView({
                                 />
                             </Box>
 
-                            {/* PANEL PRINCIPAL */}
                             <Box style={{ gridColumn: 'span 2' }}>
                                 <Card size="4">
 
@@ -96,7 +95,6 @@ export default function DashboardView({
 
                                     <StatusMessage status={analysisStatus} />
 
-                                    {/* LISTA DE NEWSLETTERS */}
                                     <SubscriptionList
                                         subscriptions={filteredSubscriptions}
                                         subscriptionStates={subscriptionStates}
