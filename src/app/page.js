@@ -13,6 +13,7 @@ import DashboardView from './DashboardView';
 import { useEmailAnalysis } from './hooks/useEmailAnalysis';
 import { useSubscriptions } from './hooks/useSubscriptions';
 import { useNewsletterGroups } from './hooks/useNewsletterGroups';
+import NotificationToast from './components/NotificationToast';
 
 export default function Home() {
     const { status, data: session } = useSession();
