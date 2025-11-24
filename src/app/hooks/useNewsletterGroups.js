@@ -26,8 +26,6 @@ export function useNewsletterGroups(userEmail) {
             setLoading(true);
             setError(null);
 
-            console.log('[fetchGroups] Obteniendo grupos para:', userEmail);
-
             const response = await fetch(
                 `${API_URL}/read-groups.php?user_email=${encodeURIComponent(userEmail)}`
             );
@@ -37,16 +35,13 @@ export function useNewsletterGroups(userEmail) {
             }
 
             const data = await response.json();
-            console.log('[fetchGroups] Respuesta:', data);
 
             if (data.success) {
-                console.log('[fetchGroups] Grupos cargados:', data.groups?.length || 0);
                 setGroups(data.groups || []);
             } else {
                 throw new Error(data.error || 'Error al cargar grupos');
             }
         } catch (err) {
-            console.error('[fetchGroups] Error:', err);
             setError(err.message || 'Error de conexión al cargar grupos');
             setGroups([]);
         } finally {
@@ -61,8 +56,6 @@ export function useNewsletterGroups(userEmail) {
         }
 
         try {
-            console.log('[createGroup] Creando grupo:', { groupName, description, color });
-
             const response = await fetch(`${API_URL}/create-group.php`, {
                 method: 'POST',
                 headers: {
@@ -78,17 +71,14 @@ export function useNewsletterGroups(userEmail) {
             });
 
             const data = await response.json();
-            console.log('[createGroup] Respuesta:', data);
 
             if (data.success) {
-                // Recargar grupos inmediatamente después de crear
                 await fetchGroups();
                 return { success: true, group: data.group };
             } else {
                 return { success: false, error: data.error || 'Error al crear grupo' };
             }
         } catch (err) {
-            console.error('[createGroup] Error:', err);
             return { success: false, error: 'Error de conexión al crear grupo' };
         }
     };
@@ -100,8 +90,6 @@ export function useNewsletterGroups(userEmail) {
         }
 
         try {
-            console.log('[updateGroup] Actualizando grupo:', groupId, updates);
-
             const response = await fetch(`${API_URL}/update-group.php`, {
                 method: 'PUT',
                 headers: {
@@ -121,17 +109,14 @@ export function useNewsletterGroups(userEmail) {
             }
 
             const data = await response.json();
-            console.log('[updateGroup] Respuesta:', data);
 
             if (data.success) {
-                // Recargar grupos después de actualizar
                 await fetchGroups();
                 return { success: true, group: data.group };
             } else {
                 return { success: false, error: data.error || 'Error al actualizar grupo' };
             }
         } catch (err) {
-            console.error('[updateGroup] Error:', err);
             return { success: false, error: err.message || 'Error de conexión al actualizar grupo' };
         }
     };
@@ -143,8 +128,6 @@ export function useNewsletterGroups(userEmail) {
         }
 
         try {
-            console.log('[deleteGroup] Eliminando grupo:', groupId);
-
             const response = await fetch(`${API_URL}/delete-group.php`, {
                 method: 'DELETE',
                 headers: {
@@ -157,17 +140,14 @@ export function useNewsletterGroups(userEmail) {
             });
 
             const data = await response.json();
-            console.log('[deleteGroup] Respuesta:', data);
 
             if (data.success) {
-                // Recargar grupos después de eliminar
                 await fetchGroups();
                 return { success: true };
             } else {
                 return { success: false, error: data.error || 'Error al eliminar grupo' };
             }
         } catch (err) {
-            console.error('[deleteGroup] Error:', err);
             return { success: false, error: 'Error de conexión al eliminar grupo' };
         }
     };
@@ -175,8 +155,6 @@ export function useNewsletterGroups(userEmail) {
     // Agregar newsletter a grupo
     const addNewsletterToGroup = async (groupId, senderEmail, senderName = null) => {
         try {
-            console.log('[addNewsletterToGroup] Agregando:', { groupId, senderEmail, senderName });
-
             const response = await fetch(`${API_URL}/add-newsletter.php`, {
                 method: 'POST',
                 headers: {
@@ -190,17 +168,14 @@ export function useNewsletterGroups(userEmail) {
             });
 
             const data = await response.json();
-            console.log('[addNewsletterToGroup] Respuesta:', data);
 
             if (data.success) {
-                // Recargar grupos después de agregar newsletter
                 await fetchGroups();
                 return { success: true };
             } else {
                 return { success: false, error: data.error || 'Error al agregar newsletter' };
             }
         } catch (err) {
-            console.error('[addNewsletterToGroup] Error:', err);
             return { success: false, error: 'Error de conexión al agregar newsletter' };
         }
     };
@@ -208,8 +183,6 @@ export function useNewsletterGroups(userEmail) {
     // Remover newsletter de grupo
     const removeNewsletterFromGroup = async (groupId, senderEmail) => {
         try {
-            console.log('[removeNewsletterFromGroup] Removiendo:', { groupId, senderEmail });
-
             const response = await fetch(`${API_URL}/remove-newsletter.php`, {
                 method: 'DELETE',
                 headers: {
@@ -222,17 +195,14 @@ export function useNewsletterGroups(userEmail) {
             });
 
             const data = await response.json();
-            console.log('[removeNewsletterFromGroup] Respuesta:', data);
 
             if (data.success) {
-                // Recargar grupos después de remover newsletter
                 await fetchGroups();
                 return { success: true };
             } else {
                 return { success: false, error: data.error || 'Error al remover newsletter' };
             }
         } catch (err) {
-            console.error('[removeNewsletterFromGroup] Error:', err);
             return { success: false, error: 'Error de conexión al remover newsletter' };
         }
     };

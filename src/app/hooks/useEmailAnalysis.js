@@ -23,35 +23,27 @@ export function useEmailAnalysis(userEmail) {
                 const data = JSON.parse(cached);
                 const cacheAge = Date.now() - data.timestamp;
 
-                console.log('[useEmailAnalysis] Cache encontrado, edad:', Math.round(cacheAge / 1000 / 60), 'minutos');
-
-                // Si el cache es válido (menos de 24 horas)
                 if (cacheAge < CACHE_DURATION) {
                     setSubscriptions(data.subscriptions);
                     setAnalysisStatus({
                         type: 'cached',
                         message: `${data.subscriptions.length} newsletters cargadas (actualizado hace ${formatCacheAge(cacheAge)})`
                     });
-                    console.log('[useEmailAnalysis] Cache válido, cargando', data.subscriptions.length, 'newsletters');
                     return true;
                 }
-
-                console.log('[useEmailAnalysis] Cache expirado');
             }
 
-            // No hay cache o está expirado
             setAnalysisStatus({
                 type: 'info',
                 message: 'Haz clic en "Analizar Correos" para comenzar'
             });
+
             return false;
-        } catch (error) {
-            console.error('[useEmailAnalysis] Error cargando cache:', error);
+        } catch {
             return false;
         }
     };
 
-    // Guardar suscripciones en localStorage
     const saveToCache = (subs) => {
         try {
             const cacheKey = `${STORAGE_KEY}_${userEmail}`;
@@ -61,13 +53,9 @@ export function useEmailAnalysis(userEmail) {
                 userEmail: userEmail
             };
             localStorage.setItem(cacheKey, JSON.stringify(data));
-            console.log('[useEmailAnalysis] Guardado en cache:', subs.length, 'newsletters');
-        } catch (error) {
-            console.error('[useEmailAnalysis] Error guardando cache:', error);
-        }
+        } catch {}
     };
 
-    // Analizar correos
     const handleAnalyzeEmails = async () => {
         if (!userEmail) {
             setAnalysisStatus({
@@ -84,8 +72,6 @@ export function useEmailAnalysis(userEmail) {
         });
 
         try {
-            console.log('[useEmailAnalysis] Iniciando análisis para:', userEmail);
-
             const response = await fetch('/api/analyze-emails', {
                 method: 'POST',
                 headers: {
@@ -99,16 +85,10 @@ export function useEmailAnalysis(userEmail) {
             }
 
             const data = await response.json();
-            console.log('[useEmailAnalysis] Análisis completado:', {
-                newsletters: data.subscriptions?.length || 0,
-                analizados: data.totalAnalyzed,
-                unicos: data.totalUnique
-            });
 
             if (data.subscriptions && data.subscriptions.length > 0) {
                 setSubscriptions(data.subscriptions);
 
-                // Guardar en cache
                 saveToCache(data.subscriptions);
 
                 setAnalysisStatus({
@@ -123,9 +103,6 @@ export function useEmailAnalysis(userEmail) {
                 });
             }
         } catch (error) {
-            console.error('[useEmailAnalysis] Error:', error);
-
-            // Mensajes de error específicos
             let errorMessage = 'Error al analizar correos';
 
             if (error.message.includes('401') || error.message.includes('No autorizado')) {
@@ -149,7 +126,6 @@ export function useEmailAnalysis(userEmail) {
         }
     };
 
-    // Función auxiliar para formatear edad del cache
     const formatCacheAge = (milliseconds) => {
         const minutes = Math.floor(milliseconds / 1000 / 60);
         const hours = Math.floor(minutes / 60);

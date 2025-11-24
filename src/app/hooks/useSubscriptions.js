@@ -21,7 +21,6 @@ export function useSubscriptions(userEmail) {
 
             return { success: true, data };
         } catch (error) {
-            console.error(`Error en ${endpoint}:`, error);
             return { success: false, error: error.message || 'Error de conexión' };
         }
     }, []);
@@ -66,6 +65,6 @@ export function useSubscriptions(userEmail) {
         },
         [subscriptionStates, userEmail, apiRequest, updateState]
     );
-    
+
     return { subscriptionStates, handleSpamToggle };
 }

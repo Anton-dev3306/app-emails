@@ -26,7 +26,7 @@ export async function POST(req) {
 
         const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-        // Paso 1: Analizar correos para identificar patrones de newsletter
+        //Analizar correos para identificar patrones de newsletter
         const searchResponse = await gmail.users.messages.list({
             userId: 'me',
             maxResults: 20,
@@ -42,7 +42,7 @@ export async function POST(req) {
             }, { status: 404 });
         }
 
-        // Paso 2: Identificar características de la newsletter
+        // Identificar características de la newsletter
         const newsletterPatterns = await identifyNewsletterPatterns(gmail, messages, senderEmail);
 
         if (!newsletterPatterns.isNewsletter) {
@@ -53,7 +53,7 @@ export async function POST(req) {
             }, { status: 400 });
         }
 
-        // Paso 3: Buscar SOLO correos que coincidan con el patrón de newsletter
+        // Buscar SOLO correos que coincidan con el patrón de newsletter
         let allNewsletterMessages = [];
         let pageToken = null;
 
@@ -75,7 +75,7 @@ export async function POST(req) {
             if (!pageToken) break;
         }
 
-        // Paso 4: Marcar SOLO los correos de newsletter como SPAM
+        // Marcar SOLO los correos de newsletter como SPAM
         let markedCount = 0;
         const batchSize = 1000;
 
@@ -99,7 +99,7 @@ export async function POST(req) {
             }
         }
 
-        // Paso 5: Crear filtro SOLO para newsletters futuras
+        //  Crear filtro SOLO para newsletters futuras
         let filterCreated = false;
         try {
             const filterCriteria = buildFilterCriteria(senderEmail, newsletterPatterns);
@@ -275,7 +275,7 @@ function hasUnsubscribeInContent(part) {
 function findCommonPrefix(subjects) {
     if (subjects.length < 3) return null;
 
-    // Buscar patrones entre corchetes [...]
+    // Buscar patrones entre corchetes
     const bracketPattern = /^\[([^\]]+)\]/;
     const bracketsMatches = subjects.map(s => s.match(bracketPattern)?.[1]).filter(Boolean);
 

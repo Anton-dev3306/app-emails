@@ -26,7 +26,7 @@ export async function POST(req) {
 
         const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-        // Paso 1: Buscar TODOS los correos marcados como spam del remitente
+        //  Buscar TODOS los correos marcados como spam del remitente
         let allSpamMessages = [];
         let pageToken = null;
 
@@ -57,7 +57,7 @@ export async function POST(req) {
             });
         }
 
-        // Paso 2: Mover TODOS los correos de spam a la bandeja de entrada
+        // Mover TODOS los correos de spam a la bandeja de entrada
         let restoredCount = 0;
         const batchSize = 1000;
 
@@ -81,7 +81,7 @@ export async function POST(req) {
             }
         }
 
-        // Paso 3: Eliminar filtros que envían correos a spam
+        // Eliminar filtros que envían correos a spam
         let filtersRemoved = 0;
         try {
             const filtersResponse = await gmail.users.settings.filters.list({
@@ -112,7 +112,7 @@ export async function POST(req) {
             console.error('Error eliminando filtros:', error);
         }
 
-        // Paso 4: Marcar los correos restaurados como no leídos (opcional)
+        //  Marcar los correos restaurados como no leídos (opcional)
         // Esto ayuda a que el usuario los vea
         try {
             if (allSpamMessages.length > 0) {
