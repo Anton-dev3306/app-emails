@@ -19,8 +19,8 @@ export function useSubscriptions(userEmail) {
             });
 
             const data = await response.json();
+            if (!response.ok) new Error(data.error || 'Error desconocido');
 
-            if (!response.ok)  new Error(data.error || 'Error desconocido');
             return { success: true, data };
         } catch (error) {
             console.error(`Error en ${endpoint}:`, error);
