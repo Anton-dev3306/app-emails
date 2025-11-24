@@ -28,7 +28,7 @@ export default function DashboardView({
                                           onUpdateGroup,
                                           onDeleteGroup,
                                           onAddToGroup,
-                                          onRemoveFromGroup     // <── SE AGREGA A LAS PROPS
+                                          onRemoveFromGroup    
                                       }) {
     const [selectedGroupId, setSelectedGroupId] = useState('all');
 
