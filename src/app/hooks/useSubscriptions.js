@@ -92,6 +92,6 @@ export function useSubscriptions(userEmail) {
         },
         [subscriptionStates, userEmail, apiRequest, updateState]
     );
-
-    return { subscriptionStates, handleSubscriptionToggle, handleSpamToggle };
+    
+    return { subscriptionStates, handleSpamToggle };
 }
