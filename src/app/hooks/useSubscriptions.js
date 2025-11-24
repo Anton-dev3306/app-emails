@@ -1,8 +1,6 @@
 import { useState, useCallback } from 'react';
 
 const API = {
-    subscribe: '/api/subscribe',
-    unsubscribe: '/api/unsubscribe',
     markSpam: '/api/mark-spam',
     unmarkSpam: '/api/unmark-spam',
 };
