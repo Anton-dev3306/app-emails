@@ -17,6 +17,7 @@ export function useSubscriptions(userEmail) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
+
             const data = await response.json();
 
             if (!response.ok)  new Error(data.error || 'Error desconocido');
