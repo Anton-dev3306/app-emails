@@ -33,32 +33,6 @@ export function useSubscriptions(userEmail) {
         }));
     }, []);
 
-    const handleSubscriptionToggle = useCallback(
-        async (subscription) => {
-            const { senderEmail, sender } = subscription;
-            const current = subscriptionStates[senderEmail] || {};
-            if (current.loading) return;
-
-            const isSubscribed = !current.unsubscribed;
-            updateState(senderEmail, { loading: true, error: false });
-
-            const { success, error } = await apiRequest(
-                isSubscribed ? API.unsubscribe : API.subscribe,
-                { senderEmail, sender, userEmail }
-            );
-
-            updateState(senderEmail, {
-                loading: false,
-                unsubscribed: isSubscribed,
-                error: !success,
-                markedAsSpam: false,
-            });
-
-            if (error) console.error(error);
-        },
-        [subscriptionStates, userEmail, apiRequest, updateState]
-    );
-
     const handleSpamToggle = useCallback(
         async (subscription) => {
             const { senderEmail, sender } = subscription;
