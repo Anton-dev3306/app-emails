@@ -46,7 +46,7 @@ export default function Home() {
         removeNewsletterFromGroup
     } = useNewsletterGroups(session?.user?.email);
 
-    // Manejador de inicio de sesión
+    //inicio de sesión
     const handleGetStarted = async () => {
         try {
             setIsSigningIn(true);
