@@ -113,6 +113,7 @@ export default function DashboardView({
                                         onAddToGroup={onAddToGroup}
                                         onRemoveFromGroup={onRemoveFromGroup}
                                     />
+
                                 </Card>
                             </Box>
                         </Grid>
