@@ -58,7 +58,7 @@ export default function Home() {
         }
     };
 
-    // Manejador de cierre de sesión
+    //cierre de sesión
     const handleSignOut = () => {
         signOut({ redirect: false });
     };
