@@ -75,5 +75,10 @@ export function useSubscriptions(userEmail) {
         [subscriptionStates, userEmail, apiRequest, updateState]
     );
 
-    return { subscriptionStates, handleSpamToggle };
+    return {
+        subscriptionStates,
+        handleSpamToggle,
+        notification,
+        clearNotification: () => setNotification(null),
+    };
 }
