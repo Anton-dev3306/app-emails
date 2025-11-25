@@ -63,7 +63,11 @@ export function useSubscriptions(userEmail) {
                 });
             }
 
-                alert(summary);
+            if (!success) {
+                setNotification({
+                    type: 'error',
+                    message: error
+                });
             }
 
             if (error) alert(error);
