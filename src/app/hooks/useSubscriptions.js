@@ -54,10 +54,14 @@ export function useSubscriptions(userEmail) {
                 spamDetails: data?.details,
             });
 
-            if (data?.details) {
-                const summary = isSpam
-                    ? ` ${data.details.restoredToInbox} correos restaurados a la bandeja de entrada`
-                    : ` ${data.details.markedAsSpam} correos marcados como spam`;
+            // 🔥 ENVÍA JSON COMO NOTIFICACIÓN AL COMPONENTE
+            if (success && data) {
+                setNotification({
+                    type: isSpam ? 'success' : 'warning',
+                    message: data.summary,   // ← Aquí llega el "3 correos marcados como spam"
+                    details: data.details    // ← JSON completo
+                });
+            }
 
                 alert(summary);
             }
