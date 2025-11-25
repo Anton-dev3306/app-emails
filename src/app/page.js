@@ -30,7 +30,9 @@ export default function Home() {
     const {
         subscriptionStates,
         handleSubscriptionToggle,
-        handleSpamToggle
+        handleSpamToggle,
+        notification,
+        clearNotification
     } = useSubscriptions(session?.user?.email);
 
     const {
