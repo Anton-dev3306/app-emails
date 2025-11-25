@@ -10,6 +10,7 @@ import StatusMessage from './components/StatusMessage';
 import SubscriptionList from './components/SubscriptionList';
 import GroupManagementPanel from './components/GroupManagementPanel';
 import GroupSelector from './components/GroupSelector';
+import NotificationCard from './components/NotificationCard';
 
 export default function DashboardView({
                                           session,
@@ -28,26 +29,19 @@ export default function DashboardView({
                                           onUpdateGroup,
                                           onDeleteGroup,
                                           onAddToGroup,
-                                          onRemoveFromGroup    
+                                          onRemoveFromGroup,
+                                          notification,
+                                          clearNotification
                                       }) {
     const [selectedGroupId, setSelectedGroupId] = useState('all');
 
-
     const filteredSubscriptions = useMemo(() => {
-        if (selectedGroupId === 'all') {
-            return subscriptions;
-        }
+        if (selectedGroupId === 'all') return subscriptions;
 
         const selectedGroup = groups?.find(g => g.id === selectedGroupId);
+        if (!selectedGroup || !selectedGroup.newsletters) return [];
 
-        if (!selectedGroup || !selectedGroup.newsletters) {
-            return [];
-        }
-
-        const emails = new Set(
-            selectedGroup.newsletters.map(n => n.senderEmail) // Asegura consistencia
-        );
-
+        const emails = new Set(selectedGroup.newsletters.map(n => n.senderEmail));
         return subscriptions.filter(sub => emails.has(sub.senderEmail));
     }, [subscriptions, selectedGroupId, groups]);
 
@@ -69,6 +63,7 @@ export default function DashboardView({
                                 />
                             </Box>
 
+                            {/* PANEL DERECHO: DASHBOARD */}
                             <Box style={{ gridColumn: 'span 2' }}>
                                 <Card size="4">
 
@@ -99,7 +94,7 @@ export default function DashboardView({
                                         <NotificationCard
                                             notification={notification}
                                             onClose={clearNotification}
-                                            duration={8500} 
+                                            duration={8500}
                                         />
                                     )}
 

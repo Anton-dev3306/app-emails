@@ -13,13 +13,11 @@ import DashboardView from './DashboardView';
 import { useEmailAnalysis } from './hooks/useEmailAnalysis';
 import { useSubscriptions } from './hooks/useSubscriptions';
 import { useNewsletterGroups } from './hooks/useNewsletterGroups';
-import NotificationToast from './components/NotificationToast';
 
 export default function Home() {
     const { status, data: session } = useSession();
     const [isSigningIn, setIsSigningIn] = useState(false);
 
-    // Hooks de lógica (solo se ejecutan si hay sesión)
     const {
         isAnalyzing,
         analysisStatus,
@@ -103,7 +101,6 @@ export default function Home() {
         );
     }
 
-    // Si NO está autenticado -> Mostrar Landing Page
     if (status === "unauthenticated") {
         return (
             <LandingPage
@@ -113,7 +110,6 @@ export default function Home() {
         );
     }
 
-    // Si está autenticado -> Mostrar Dashboard
     return (
         <>
 

@@ -70,8 +70,6 @@ export function useSubscriptions(userEmail) {
                     message: error
                 });
             }
-
-            if (error) alert(error);
         },
         [subscriptionStates, userEmail, apiRequest, updateState]
     );
