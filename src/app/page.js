@@ -113,7 +113,9 @@ export default function Home() {
 
     // Si está autenticado -> Mostrar Dashboard
     return (
-        <DashboardView
+        <>
+
+            <DashboardView
             session={session}
             onSignOut={handleSignOut}
             isAnalyzing={isAnalyzing}
