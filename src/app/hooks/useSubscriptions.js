@@ -7,6 +7,7 @@ const API = {
 
 export function useSubscriptions(userEmail) {
     const [subscriptionStates, setSubscriptionStates] = useState({});
+    const [notification, setNotification] = useState(null);
 
     const apiRequest = useCallback(async (endpoint, payload) => {
         try {
