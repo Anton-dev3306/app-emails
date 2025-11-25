@@ -95,6 +95,15 @@ export default function DashboardView({
 
                                     <StatusMessage status={analysisStatus} />
 
+                                    {notification && (
+                                        <NotificationCard
+                                            notification={notification}
+                                            onClose={clearNotification}
+                                            duration={8500} 
+                                        />
+                                    )}
+
+                                    {/* LISTA DE SUSCRIPCIONES */}
                                     <SubscriptionList
                                         subscriptions={filteredSubscriptions}
                                         subscriptionStates={subscriptionStates}
