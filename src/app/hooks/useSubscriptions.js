@@ -49,7 +49,7 @@ export function useSubscriptions(userEmail) {
 
             updateState(senderEmail, {
                 loadingSpam: false,
-                markedAsSpam: !isSpam,
+                markedAsSpam: success ? !isSpam : isSpam,
                 errorSpam: !success,
                 spamDetails: data?.details,
             });
