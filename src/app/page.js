@@ -133,6 +133,10 @@ export default function Home() {
             onDeleteGroup={handleDeleteGroup}
             onAddToGroup={handleAddToGroup}
             onRemoveFromGroup={removeNewsletterFromGroup}
-        />
+            notification={notification}
+            clearNotification={clearNotification}
+            />
+
+        </>
     );
 }
