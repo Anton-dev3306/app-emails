@@ -11,7 +11,7 @@ export default function NotificationCard({ notification, onClose, duration = 450
 
     return (
         <div className="
-            border border-gray-300 rounded-lg p-4 mb-4 bg-white shadow-md
+            border border-yellow-100 rounded-lg p-4 mb-4 bg-white shadow-md
             flex items-start justify-between gap-4
         ">
             <div>
