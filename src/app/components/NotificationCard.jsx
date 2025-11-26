@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { X } from "lucide-react";
 
-export default function NotificationCard({ notification, onClose, duration = 4500 }) {
+export default function NotificationCard({ notification, onClose, duration = 5500 }) {
     if (!notification) return null;
 
     useEffect(() => {
