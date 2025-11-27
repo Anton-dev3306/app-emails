@@ -15,9 +15,11 @@ export default function NotificationCard({ notification, onClose, duration = 550
             flex items-start justify-between gap-4
         ">
             <div>
-                <button
-                    onClick={onClose}
-                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center
+
+                <p className="text-base">
+                    <button
+                        onClick={onClose}
+                        className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center
                bg-gray-200 hover:bg-gray-300 rounded-full text-gray-700"
                 >
                     <X size={20} />
