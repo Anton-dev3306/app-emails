@@ -16,7 +16,7 @@ export default function NotificationCard({ notification, onClose, duration = 550
                     <button
                         onClick={onClose}
                         className="absolute top-0 right-0 p-1 bg-gray-200 hover:bg-gray-300 rounded-full text-red-500"
-                    >
+                    
                     >
                         <X size={20} />
                     </button>
