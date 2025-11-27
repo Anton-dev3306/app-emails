@@ -94,7 +94,6 @@ export default function DashboardView({
                                         <NotificationCard
                                             notification={notification}
                                             onClose={clearNotification}
-                                            duration={8500}
                                         />
                                     )}
 
