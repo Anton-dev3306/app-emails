@@ -15,7 +15,10 @@ export default function NotificationCard({ notification, onClose, duration = 550
             flex items-start justify-between gap-4
         ">
             <div>
-                <h3 className="font-bold text-lg mb-1">Notificación</h3>
+                <Button onClick={onSignOut} color="red" variant="soft" size="2">
+                    <LogOut className="h-4 w-4" />
+                    Cerrar Sesión
+                </Button>
                 <p className="text-base">{notification.message}</p>
             </div>
 
