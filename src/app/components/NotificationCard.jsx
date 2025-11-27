@@ -15,8 +15,8 @@ export default function NotificationCard({ notification, onClose, duration = 550
                 <p className="text-base">
                     <button
                         onClick={onClose}
-                        className="absolute top-0 right-0 p-1 bg-gray-200 hover:bg-gray-300 rounded-full text-red-500"
-                    
+                        className=" justify-self-end p-1
+               bg-gray-200 hover:bg-gray-300 rounded-full text-red-500"
                     >
                         <X size={20} />
                     </button>
