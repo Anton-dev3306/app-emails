@@ -97,7 +97,6 @@ export default function DashboardView({
                                         />
                                     )}
 
-                                    {/* LISTA DE SUSCRIPCIONES */}
                                     <SubscriptionList
                                         subscriptions={filteredSubscriptions}
                                         subscriptionStates={subscriptionStates}
