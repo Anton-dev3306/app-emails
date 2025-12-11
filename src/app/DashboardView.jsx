@@ -68,15 +68,13 @@ export default function DashboardView({
                                         />
                                     )}
 
-                                    <SubscriptionList
-                                        subscriptionStates={subscriptionStates}
-                                        onToggleSubscription={onToggleSubscription}
-                                        onToggleSpam={onToggleSpam}
-                                    />
-
-                                </Card>
-                            </Box>
-                        </Grid>
+                            <SubscriptionList
+                                subscriptions={filteredSubscriptions}
+                                subscriptionStates={subscriptionStates}
+                                onToggleSubscription={onToggleSubscription}
+                                onToggleSpam={onToggleSpam}
+                            />
+                        </Card>
                     </Box>
                 </Container>
             </div>
