@@ -25,17 +25,6 @@ export default function DashboardView({
                                           notification,
                                           clearNotification
                                       }) {
-    const [selectedGroupId, setSelectedGroupId] = useState('all');
-
-    const filteredSubscriptions = useMemo(() => {
-        if (selectedGroupId === 'all') return subscriptions;
-
-        const selectedGroup = groups?.find(g => g.id === selectedGroupId);
-        if (!selectedGroup || !selectedGroup.newsletters) return [];
-
-        const emails = new Set(selectedGroup.newsletters.map(n => n.senderEmail));
-        return subscriptions.filter(sub => emails.has(sub.senderEmail));
-    }, [subscriptions, selectedGroupId, groups]);
 
     return (
         <Theme>
