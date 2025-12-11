@@ -52,31 +52,6 @@ export default function Home() {
         signOut({ redirect: false });
     };
 
-    // Manejador para agregar newsletter a grupo
-    const handleAddToGroup = async (groupId, subscription) => {
-        const result = await addNewsletterToGroup(
-            groupId,
-            subscription.senderEmail,
-            subscription.sender
-        );
-
-        if (!result.success) {
-            alert(result.error || 'Error al agregar newsletter al grupo');
-        }
-    };
-
-    // Manejador para eliminar grupo con confirmación
-    const handleDeleteGroup = async (groupId) => {
-        if (!confirm('¿Estás seguro de que quieres eliminar este grupo?.')) {
-            return;
-        }
-
-        const result = await deleteGroup(groupId);
-        if (!result.success) {
-            alert(result.error || 'Error al eliminar grupo');
-        }
-    };
-
     // Loading inicial
     if (status === "loading") {
         return (
