@@ -45,7 +45,24 @@ export default function SubscriptionCard({
                 </Box>
 
                 <Flex direction="column" gap="2" style={{ flexShrink: 0 }}>
-                
+                    {groups.length > 0 && (
+                        <>
+                            {/* Botón agregar a grupo */}
+                            <AddToGroupButton
+                                subscription={subscription}
+                                groups={groups}
+                                onAddToGroup={onAddToGroup}
+                            />
+
+                            {/* Botón remover de grupo */}
+                            <RemoveFromGroupButton
+                                subscription={subscription}
+                                groups={groups}
+                                onRemoveFromGroup={onRemoveFromGroup}
+                            />
+                        </>
+                    )}
+
                     {/* Botón de Marcar/Desmarcar Spam */}
                     <Button
                         onClick={() => onToggleSpam(subscription)}
