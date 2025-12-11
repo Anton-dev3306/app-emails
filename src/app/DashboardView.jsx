@@ -8,6 +8,7 @@ import WelcomeCard from './components/WelcomeCard';
 import AnalyzeButton from './components/AnalyzeButton';
 import StatusMessage from './components/StatusMessage';
 import SubscriptionList from './components/SubscriptionList';
+
 import NotificationCard from './components/NotificationCard';
 
 export default function DashboardView({
