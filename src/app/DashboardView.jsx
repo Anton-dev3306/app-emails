@@ -48,7 +48,7 @@ export default function DashboardView({
                                 onSignOut={onSignOut}
                             />
 
-                                    <WelcomeCard />
+                            <WelcomeCard />
 
                             <Separator size="4" mb="6" />
 
