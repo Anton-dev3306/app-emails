@@ -5,10 +5,7 @@ export default function SubscriptionList({
                                              subscriptions,
                                              subscriptionStates,
                                              onToggleSubscription,
-                                             onToggleSpam,
-                                             groups = [],
-                                             onAddToGroup,
-                                             onRemoveFromGroup
+                                             onToggleSpam
                                          }) {
     if (subscriptions.length === 0) return null;
 
