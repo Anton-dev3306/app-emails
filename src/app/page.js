@@ -33,16 +33,7 @@ export default function Home() {
         clearNotification
     } = useSubscriptions(session?.user?.email);
 
-    const {
-        groups,
-        loading: groupsLoading,
-        error: groupsError,
-        createGroup,
-        updateGroup,
-        deleteGroup,
-        addNewsletterToGroup,
-        removeNewsletterFromGroup
-    } = useNewsletterGroups(session?.user?.email);
+
 
     //inicio de sesión
     const handleGetStarted = async () => {
