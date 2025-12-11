@@ -7,7 +7,6 @@ export default function SubscriptionList({
                                              onToggleSubscription,
                                              onToggleSpam
                                          }) {
-    if (subscriptions.length === 0) return null;
 
     return (
         <Box mt="6">
