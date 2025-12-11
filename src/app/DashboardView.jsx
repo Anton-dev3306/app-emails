@@ -59,7 +59,7 @@ export default function DashboardView({
                                 />
                             </Flex>
 
-                                    <StatusMessage status={analysisStatus} />
+                            <StatusMessage status={analysisStatus} />
 
                             {notification && (
                                 <NotificationCard
