@@ -64,7 +64,6 @@ export default function DashboardView({
                                     )}
 
                                     <SubscriptionList
-                                        subscriptions={filteredSubscriptions}
                                         subscriptionStates={subscriptionStates}
                                         onToggleSubscription={onToggleSubscription}
                                         onToggleSpam={onToggleSpam}
