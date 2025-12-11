@@ -67,9 +67,6 @@ export default function DashboardView({
                                         subscriptionStates={subscriptionStates}
                                         onToggleSubscription={onToggleSubscription}
                                         onToggleSpam={onToggleSpam}
-                                        groups={groups}
-                                        onAddToGroup={onAddToGroup}
-                                        onRemoveFromGroup={onRemoveFromGroup}
                                     />
 
                                 </Card>
