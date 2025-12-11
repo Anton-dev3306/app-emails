@@ -8,10 +8,7 @@ export default function SubscriptionCard({
                                              subscription,
                                              state = {},
                                              onToggleSubscription,
-                                             onToggleSpam,
-                                             groups = [],
-                                             onAddToGroup,
-                                             onRemoveFromGroup
+                                             onToggleSpam
                                          }) {
     const isUnsubscribed = state.unsubscribed;
     const isMarkedAsSpam = state.markedAsSpam;
