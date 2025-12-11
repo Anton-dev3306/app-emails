@@ -21,6 +21,7 @@ export default function DashboardView({
                                           subscriptionStates,
                                           onToggleSubscription,
                                           onToggleSpam,
+                  
                                           notification,
                                           clearNotification
                                       }) {
