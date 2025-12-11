@@ -123,14 +123,6 @@ export default function Home() {
             subscriptionStates={subscriptionStates}
             onToggleSubscription={handleSubscriptionToggle}
             onToggleSpam={handleSpamToggle}
-            groups={groups}
-            groupsLoading={groupsLoading}
-            groupsError={groupsError}
-            onCreateGroup={createGroup}
-            onUpdateGroup={updateGroup}
-            onDeleteGroup={handleDeleteGroup}
-            onAddToGroup={handleAddToGroup}
-            onRemoveFromGroup={removeNewsletterFromGroup}
             notification={notification}
             clearNotification={clearNotification}
             />
