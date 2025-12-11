@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 const API = {
     markSpam: '/api/mark-spam',
     unmarkSpam: '/api/unmark-spam',
+    countEmails: '/api/email-count'
 };
 
 export function useSubscriptions(userEmail) {
