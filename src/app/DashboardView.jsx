@@ -40,8 +40,8 @@ export default function DashboardView({
     return (
         <Theme>
             <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-                <Container size="2" px="4">
-                    <Box py="3">
+                <div className="max-w-3xl mx-auto px-4">
+                    <div className="py-6">
                         <Card size="4">
                             <DashboardHeader
                                 session={session}
