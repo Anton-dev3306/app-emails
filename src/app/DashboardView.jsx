@@ -50,18 +50,8 @@ export default function DashboardView({
                     <Box py="6">
                         <Grid columns={{ initial: '1', md: '3' }} gap="4">
 
-                            {/* PANEL IZQUIERDO: GESTIÓN DE GRUPOS */}
-                            <Box>
-                                <GroupManagementPanel
-                                    groups={groups}
-                                    loading={groupsLoading}
-                                    onCreateGroup={onCreateGroup}
-                                    onUpdateGroup={onUpdateGroup}
-                                    onDeleteGroup={onDeleteGroup}
-                                />
-                            </Box>
+                          
 
-                            {/* PANEL DERECHO: DASHBOARD */}
                             <Box style={{ gridColumn: 'span 2' }}>
                                 <Card size="4">
 
