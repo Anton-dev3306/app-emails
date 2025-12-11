@@ -75,8 +75,8 @@ export default function DashboardView({
                                 onToggleSpam={onToggleSpam}
                             />
                         </Card>
-                    </Box>
-                </Container>
+                    </div>
+                </div>
             </div>
         </Theme>
     );
