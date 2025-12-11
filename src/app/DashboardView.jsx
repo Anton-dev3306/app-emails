@@ -61,12 +61,12 @@ export default function DashboardView({
 
                                     <StatusMessage status={analysisStatus} />
 
-                                    {notification && (
-                                        <NotificationCard
-                                            notification={notification}
-                                            onClose={clearNotification}
-                                        />
-                                    )}
+                            {notification && (
+                                <NotificationCard
+                                    notification={notification}
+                                    onClose={clearNotification}
+                                />
+                            )}
 
                             <SubscriptionList
                                 subscriptions={filteredSubscriptions}
