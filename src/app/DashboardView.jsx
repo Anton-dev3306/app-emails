@@ -22,12 +22,6 @@ export default function DashboardView({
                                           subscriptionStates,
                                           onToggleSubscription,
                                           onToggleSpam,
-                                          groups,
-                                          groupsLoading,
-                                          groupsError,
-                                          onCreateGroup,
-                                          onUpdateGroup,
-                                          onDeleteGroup
                                           notification,
                                           clearNotification
                                       }) {
