@@ -40,19 +40,13 @@ export default function DashboardView({
     return (
         <Theme>
             <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-                <Container>
-                    <Box py="6">
-                        <Grid columns={{ initial: '1', md: '3' }} gap="4">
-
-                          
-
-                            <Box style={{ gridColumn: 'span 2' }}>
-                                <Card size="4">
-
-                                    <DashboardHeader
-                                        session={session}
-                                        onSignOut={onSignOut}
-                                    />
+                <Container size="2" px="4">
+                    <Box py="3">
+                        <Card size="4">
+                            <DashboardHeader
+                                session={session}
+                                onSignOut={onSignOut}
+                            />
 
                                     <WelcomeCard />
 
