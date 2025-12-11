@@ -27,9 +27,7 @@ export default function DashboardView({
                                           groupsError,
                                           onCreateGroup,
                                           onUpdateGroup,
-                                          onDeleteGroup,
-                                          onAddToGroup,
-                                          onRemoveFromGroup,
+                                          onDeleteGroup
                                           notification,
                                           clearNotification
                                       }) {
