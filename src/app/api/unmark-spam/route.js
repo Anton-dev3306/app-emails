@@ -136,7 +136,7 @@ export async function POST(req) {
 
         return NextResponse.json({
             success: true,
-            message: 'Newsletters restauradas exitosamente',
+            message: `${restoredCount} correos restaurados`,
             details: {
                 totalFound: allSpamMessages.length,
                 restoredToInbox: restoredCount,
