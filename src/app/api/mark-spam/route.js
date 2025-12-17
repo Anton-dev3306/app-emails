@@ -111,7 +111,7 @@ export async function POST(req) {
             }
         }
 
-        //  Crear filtro SOLO para newsletters futuras
+        // Crear filtro para correos futuros
         let filterCreated = false;
         try {
             const filterCriteria = buildFilterCriteria(senderEmail, newsletterPatterns);
