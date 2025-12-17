@@ -49,8 +49,9 @@ export default function SubscriptionList({
             </Flex>
 
             <Flex direction="column" gap="3">
-                {subscriptions.map((sub, index) => {
-                    const state = subscriptionStates[sub.senderEmail] || {};
+                {filteredSubscriptions.length > 0 ? (
+                    filteredSubscriptions.map((sub) => {
+                        const state = subscriptionStates[sub.email] || {};
 
                     return (
                         <SubscriptionCard
