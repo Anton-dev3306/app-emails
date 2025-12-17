@@ -31,8 +31,13 @@ export async function POST() {
             'category:updates'
         ];
 
-        let allMessageIds = new Set();
-        let queryResults = {};
+                let allMessageIds = new Set();
+
+                // Fase 1: Recolectar TODOS los IDs
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    type: 'phase',
+                    message: 'Buscando newsletters en tu correo...'
+                })}\n\n`));
 
                 for (const query of queries) {
                     try {
