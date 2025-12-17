@@ -127,24 +127,9 @@ export async function POST() {
 
         const senderMap = new Map();
 
-        allEmailDetails.forEach(email => {
-            let senderEmail = null;
-
-            const fromMatch = email.from.match(/<(.+?)>/) || email.from.match(/(\S+@\S+\.\S+)/);
-            if (fromMatch) {
-                senderEmail = fromMatch[1]?.trim().toLowerCase();
-            }
-
-            if (!senderEmail && email.returnPath) {
-                const returnMatch = email.returnPath.match(/<(.+?)>/) || email.returnPath.match(/(\S+@\S+\.\S+)/);
-                if (returnMatch) {
-                    senderEmail = returnMatch[1]?.trim().toLowerCase();
-                }
-            }
-
-            if (!senderEmail && email.from.includes('@')) {
-                senderEmail = email.from.trim().toLowerCase();
-            }
+                for (const email of allEmailDetails) {
+                    const senderEmail = extractEmail(email);
+                    if (!senderEmail) continue;
 
             if (!senderEmail) return;
 
