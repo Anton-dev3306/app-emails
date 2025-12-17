@@ -256,8 +256,8 @@ export async function POST() {
 }
 
 
-function determineCategoryFromEmail(sender, email, subjects = []) {
-    const text = (sender + ' ' + email + ' ' + subjects.join(' ')).toLowerCase();
+function extractEmail(email) {
+    let senderEmail = null;
 
     const fromMatch = email.from.match(/<(.+?)>/) || email.from.match(/(\S+@\S+\.\S+)/);
     if (fromMatch) {
