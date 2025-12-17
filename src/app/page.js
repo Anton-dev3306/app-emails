@@ -22,6 +22,8 @@ export default function Home() {
         isAnalyzing,
         analysisStatus,
         subscriptions,
+        analysisProgress,
+        finalStats,
         handleAnalyzeEmails
     } = useEmailAnalysis(session?.user?.email);
 
