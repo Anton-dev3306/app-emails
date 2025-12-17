@@ -53,19 +53,26 @@ export default function SubscriptionList({
                     filteredSubscriptions.map((sub) => {
                         const state = subscriptionStates[sub.email] || {};
 
-                    return (
-                        <SubscriptionCard
-                            key={index}
-                            subscription={sub}
-                            state={state}
-                            onToggleSubscription={onToggleSubscription}
-                            onToggleSpam={onToggleSpam}
-                            groups={groups}
-                            onAddToGroup={onAddToGroup}
-                            onRemoveFromGroup={onRemoveFromGroup}
-                        />
-                    );
-                })}
+                        return (
+                            <SubscriptionCard
+                                key={sub.email}
+                                subscription={sub}
+                                state={state}
+                                onToggleSubscription={onToggleSubscription}
+                                onToggleSpam={onToggleSpam}
+                                groups={groups}
+                                onAddToGroup={onAddToGroup}
+                                onRemoveFromGroup={onRemoveFromGroup}
+                            />
+                        );
+                    })
+                ) : (
+                    <Box py="6" style={{ textAlign: 'center' }}>
+                        <Text size="3" color="gray">
+                            No se encontraron remitentes que coincidan con "{searchQuery}"
+                        </Text>
+                    </Box>
+                )}
             </Flex>
         </Box>
     );
