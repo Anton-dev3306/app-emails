@@ -121,17 +121,80 @@ export function useEmailAnalysis(userEmail) {
 
                             const data = JSON.parse(jsonStr);
 
-                setAnalysisStatus({
-                    type: 'success',
-                    message: `¡Análisis completo! ${data.subscriptions.length} newsletters encontradas de ${data.totalAnalyzed} correos analizados`
-                });
-            } else {
-                setSubscriptions([]);
-                setAnalysisStatus({
-                    type: 'warning',
-                    message: 'No se encontraron newsletters en tu correo'
-                });
+                            if (data.type === 'start') {
+                                setAnalysisStatus({
+                                    type: 'analyzing',
+                                    message: data.message
+                                });
+                            } else if (data.type === 'phase') {
+                                setAnalysisProgress(prev => ({
+                                    ...prev,
+                                    phase: data.message
+                                }));
+                                setAnalysisStatus({
+                                    type: 'analyzing',
+                                    message: data.message
+                                });
+                            } else if (data.type === 'collecting') {
+                                setAnalysisProgress({
+                                    current: data.current,
+                                    total: data.current,
+                                    percentage: 0,
+                                    phase: data.message
+                                });
+                                setAnalysisStatus({
+                                    type: 'analyzing',
+                                    message: data.message
+                                });
+                            } else if (data.type === 'progress') {
+                                setAnalysisProgress({
+                                    current: data.current,
+                                    total: data.total,
+                                    percentage: data.percentage,
+                                    phase: data.message
+                                });
+                                setAnalysisStatus({
+                                    type: 'analyzing',
+                                    message: data.message
+                                });
+                            } else if (data.type === 'counting') {
+                                setAnalysisProgress(prev => ({
+                                    ...prev,
+                                    phase: data.message
+                                }));
+                                setAnalysisStatus({
+                                    type: 'analyzing',
+                                    message: data.message
+                                });
+                            } else if (data.type === 'complete') {
+                                const subs = data.subscriptions || [];
+                                setSubscriptions(subs);
+                                setFinalStats({
+                                    totalAnalyzed: data.totalAnalyzed || 0,
+                                    totalNewsletters: subs.length
+                                });
+
+                                if (subs.length > 0) {
+                                    saveToCache(subs, data.totalAnalyzed);
+                                }
+
+                                setAnalysisStatus({
+                                    type: 'success',
+                                    message: `¡Análisis completo! ${subs.length} newsletters encontradas de ${data.totalAnalyzed} correos encontrados`
+                                });
+                                setAnalysisProgress({ current: 0, total: 0, percentage: 0, phase: '' });
+                            } else if (data.type === 'error') {
+                                throw new Error(data.details || data.error);
+                            }
+                        } catch (parseError) {
+                            if (!parseError.message.includes('Unterminated')) {
+                                console.error('Error parsing SSE data:', parseError);
+                            }
+                        }
+                    }
+                }
             }
+
         } catch (error) {
             let errorMessage = 'Error al analizar correos';
 
