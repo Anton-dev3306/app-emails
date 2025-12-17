@@ -67,10 +67,11 @@ export async function POST() {
                     return;
                 }
 
-        const messagesToAnalyze = Array.from(allMessageIds).slice(0, 300);
-
-        const batchSize = 50;
-        const batches = [];
+                // Fase 2: Analizar TODOS los mensajes
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    type: 'phase',
+                    message: `Analizando ${allMessageIds.size} correos...`
+                })}\n\n`));
 
                 const messagesToAnalyze = Array.from(allMessageIds);
                 const batchSize = 100;
