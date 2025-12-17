@@ -83,7 +83,7 @@ export async function POST(req) {
             }
         }
 
-        // Eliminar filtros que envían correos a spam
+        // Eliminar TODOS los filtros que envían correos a spam
         let filtersRemoved = 0;
         try {
             const filtersResponse = await gmail.users.settings.filters.list({
