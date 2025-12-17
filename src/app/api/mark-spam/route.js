@@ -140,6 +140,7 @@ export async function POST(req) {
             details: {
                 totalNewslettersFound: allNewsletterMessages.length,
                 markedAsSpam: markedCount,
+                successRate: successRate,
                 filterCreated,
                 senderEmail,
                 senderName: sender,
