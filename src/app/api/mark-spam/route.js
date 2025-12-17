@@ -46,7 +46,30 @@ export async function POST(req) {
 
                 const messages = searchResponse.data.messages || [];
 
-        if (messages.length === 0) {
+                if (messages.length > 0) {
+                    allMessages = [...allMessages, ...messages];
+                    console.log(`📧 Iteración ${iterations + 1}: +${messages.length} correos. Total: ${allMessages.length}/${totalEmails || '?'}`);
+                }
+
+                pageToken = searchResponse.data.nextPageToken;
+                iterations++;
+
+                // Continuar hasta que no haya más páginas O alcancemos el total esperado
+                if (pageToken && totalEmails && allMessages.length >= totalEmails) {
+                    console.log(`✅ Alcanzado el total esperado: ${allMessages.length}`);
+                    break;
+                }
+
+                if (pageToken) {
+                    await new Promise(resolve => setTimeout(resolve, 50)); // Reducido para ser más rápido
+                }
+            } catch (error) {
+                console.error('Error en búsqueda:', error);
+                break;
+            }
+        } while (pageToken && iterations < maxIterations);
+
+        if (allMessages.length === 0) {
             return NextResponse.json({
                 error: 'No se encontraron correos de este remitente',
                 success: false
