@@ -55,9 +55,12 @@ export default function Home() {
         }
     };
 
-    //cierre de sesión
-    const handleSignOut = () => {
-        signOut({ redirect: false });
+    const handleSignOut = async () => {
+        try {
+            await signOut({ callbackUrl: '/' });
+        } catch (error) {
+            console.error('Error durante el cierre de sesión:', error);
+        }
     };
 
     // Loading inicial
