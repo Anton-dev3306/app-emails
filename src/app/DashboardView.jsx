@@ -4,6 +4,7 @@ import { Theme, Card, Separator, Flex } from "@radix-ui/themes";
 import DashboardHeader from './components/DashboardHeader';
 import WelcomeCard from './components/WelcomeCard';
 import AnalyzeButton from './components/AnalyzeButton';
+import BulkSpamButton from './components/BulkSpamButton';
 import StatusMessage from './components/StatusMessage';
 import SubscriptionList from './components/SubscriptionList';
 
