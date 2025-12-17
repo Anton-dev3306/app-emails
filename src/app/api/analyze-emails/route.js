@@ -259,18 +259,10 @@ export async function POST() {
 function determineCategoryFromEmail(sender, email, subjects = []) {
     const text = (sender + ' ' + email + ' ' + subjects.join(' ')).toLowerCase();
 
-    if (text.match(/github|gitlab|bitbucket|stackoverflow|dev\.to|hashnode/)) return 'Desarrollo';
-    if (text.match(/linkedin|indeed|glassdoor|job|career|hiring|recruit/)) return 'Profesional';
-    if (text.match(/amazon|ebay|shop|store|buy|sale|discount|offer|deal|coupon/)) return 'Comercial';
-    if (text.match(/nyt|cnn|bbc|reuters|news|newsletter|daily|weekly|bulletin/)) return 'Noticias';
-    if (text.match(/bank|paypal|stripe|payment|invoice|receipt|transaction|billing/)) return 'Financiero';
-    if (text.match(/facebook|twitter|instagram|reddit|discord|social|community/)) return 'Social';
-    if (text.match(/udemy|coursera|pluralsight|education|course|learn|training|webinar/)) return 'Educación';
-    if (text.match(/fitness|health|wellness|medical|workout|nutrition/)) return 'Salud';
-    if (text.match(/airbnb|booking|expedia|travel|hotel|flight|trip/)) return 'Viajes';
-    if (text.match(/spotify|netflix|youtube|entertainment|music|movie|game|event/)) return 'Entretenimiento';
-    if (text.match(/medium|substack|blog|article|post/)) return 'Blogs';
-    if (text.match(/security|alert|notification|update|verification/)) return 'Seguridad';
+    const fromMatch = email.from.match(/<(.+?)>/) || email.from.match(/(\S+@\S+\.\S+)/);
+    if (fromMatch) {
+        senderEmail = fromMatch[1]?.trim().toLowerCase();
+    }
 
     if (!senderEmail && email.returnPath) {
         const returnMatch = email.returnPath.match(/<(.+?)>/) || email.returnPath.match(/(\S+@\S+\.\S+)/);
