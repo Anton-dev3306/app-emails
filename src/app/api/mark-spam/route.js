@@ -76,31 +76,7 @@ export async function POST(req) {
             }, { status: 404 });
         }
 
-        // Identificar características de la newsletter
-        const newsletterPatterns = await identifyNewsletterPatterns(gmail, messages, senderEmail);
-
-        if (!newsletterPatterns.isNewsletter) {
-            return NextResponse.json({
-                success: false,
-                error: 'No se detectaron patrones de newsletter en estos correos',
-                suggestion: 'Este remitente no parece enviar newsletters. ¿Deseas marcar todos sus correos como spam?'
-            }, { status: 400 });
-        }
-
-        // Buscar SOLO correos que coincidan con el patrón de newsletter
-        let allNewsletterMessages = [];
-        let pageToken = null;
-
-        // Construir query específica para newsletters
-        const newsletterQuery = buildNewsletterQuery(senderEmail, newsletterPatterns);
-
-        for (let i = 0; i < 5; i++) {
-            const searchNewsletters = await gmail.users.messages.list({
-                userId: 'me',
-                maxResults: 100,
-                q: newsletterQuery,
-                pageToken: pageToken
-            });
+        console.log(`TOTAL encontrado: ${allMessages.length} correos de ${senderEmail}`);
 
             const foundMessages = searchNewsletters.data.messages || [];
             allNewsletterMessages = [...allNewsletterMessages, ...foundMessages];
