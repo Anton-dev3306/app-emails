@@ -275,12 +275,11 @@ function determineCategoryFromEmail(sender, email, subjects = []) {
     return 'Otro';
 }
 
-function getCategoryCounts(subscriptions) {
-    const counts = {};
-    subscriptions.forEach(sub => {
-        counts[sub.category] = (counts[sub.category] || 0) + 1;
-    });
-    return counts;
+    if (!senderEmail && email.from.includes('@')) {
+        senderEmail = email.from.trim().toLowerCase();
+    }
+
+    return senderEmail;
 }
 
 function extractSenderName(fromHeader, senderEmail) {
