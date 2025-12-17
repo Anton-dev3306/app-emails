@@ -5,7 +5,7 @@ import {Button} from "@radix-ui/themes";
 export default function NotificationCard({ notification, onClose}) {
     if (!notification) return null;
 
-   
+
     return (
         <div className="
             border border-green-300 rounded-lg p-4 mb-4 bg-green-100 shadow-md
