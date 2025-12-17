@@ -47,8 +47,18 @@ export async function POST() {
 
                 messages.forEach(msg => allMessageIds.add(msg.id));
 
-                const newMessages = allMessageIds.size - beforeCount;
-                queryResults[query] = { total: messages.length, nuevos: newMessages };
+                            controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                                type: 'collecting',
+                                current: allMessageIds.size,
+                                message: `Encontrados ${allMessageIds.size} correos potenciales...`
+                            })}\n\n`));
+
+                            pageToken = result.data.nextPageToken;
+
+                            if (pageToken) {
+                                await new Promise(resolve => setTimeout(resolve, 100));
+                            }
+                        } while (pageToken);
 
                 await new Promise(resolve => setTimeout(resolve, 100));
             } catch (error) {
