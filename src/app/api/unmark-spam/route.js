@@ -26,7 +26,7 @@ export async function POST(req) {
 
         const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-        //  Buscar TODOS los correos marcados como spam del remitente
+        //Proceso de busqueda de TODOS los correos en spam del remitente
         let allSpamMessages = [];
         let pageToken = null;
 
