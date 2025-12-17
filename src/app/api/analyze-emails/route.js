@@ -125,7 +125,7 @@ export async function POST() {
             });
         }
 
-        const senderMap = new Map();
+                const senderMap = new Map();
 
                 for (const email of allEmailDetails) {
                     const senderEmail = extractEmail(email);
