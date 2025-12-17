@@ -134,6 +134,8 @@ export async function POST(req) {
             console.log('No se pudieron marcar como no leídos:', error);
         }
 
+        const successRate = Math.round((restoredCount / allSpamMessages.length) * 100);
+
         return NextResponse.json({
             success: true,
             message: `${restoredCount} correos restaurados`,
