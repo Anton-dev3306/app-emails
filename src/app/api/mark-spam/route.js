@@ -102,7 +102,12 @@ export async function POST(req) {
                 markedCount += messageIds.length;
                 console.log(`Spam: ${markedCount}/${allMessages.length} (${Math.round(markedCount/allMessages.length*100)}%)`);
             } catch (error) {
-                console.error(`Error marcando lote:`, error);
+                console.error(`Error en lote ${Math.floor(i/batchSize) + 1}:`, error.message);
+            }
+
+            // Pequeña pausa entre lotes
+            if (i + batchSize < allMessages.length) {
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
         }
 
