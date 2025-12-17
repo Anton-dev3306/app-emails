@@ -176,9 +176,35 @@ export async function POST() {
                     senderData.dates.push(email.date);
                     senderData.messageIds.push(email.messageId);
 
-            if (email.listUnsubscribe) senderData.hasUnsubscribeLink = true;
-            if (email.listId) senderData.hasListId = true;
-        });
+                    if (email.listUnsubscribe) senderData.hasUnsubscribeLink = true;
+                    if (email.listId) senderData.hasListId = true;
+                }
+
+// Fase 4: Obtener conteos exactos en paralelo con lotes
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    type: 'phase',
+                    message: `Obteniendo conteo exacto de ${senderMap.size} remitentes...`
+                })}\n\n`));
+
+                const senderEntries = Array.from(senderMap.entries());
+                const subscriptionsWithExactCount = [];
+                const batchSizeCount = 20;
+                let processedCount = 0;
+
+                for (let i = 0; i < senderEntries.length; i += batchSizeCount) {
+                    const batch = senderEntries.slice(i, i + batchSizeCount);
+
+                    const batchResults = await Promise.all(
+                        batch.map(async (entry) => {
+                            const senderEmail = entry[0];
+                            const senderData = entry[1];
+
+                            try {
+                                const searchResult = await gmail.users.messages.list({
+                                    userId: 'me',
+                                    q: `from:"${senderEmail}"`,
+                                    maxResults: 1
+                                });
 
                                 const exactCount = searchResult.data.resultSizeEstimate || senderData.totalEmails;
 
