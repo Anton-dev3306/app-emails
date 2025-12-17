@@ -2,7 +2,12 @@
 import { Button, Flex, Text, Box, Progress } from "@radix-ui/themes";
 import { Mail, Loader } from 'lucide-react';
 
-export default function AnalyzeButton({ isAnalyzing, onAnalyze }) {
+export default function AnalyzeButton({
+                                          isAnalyzing,
+                                          onAnalyze,
+                                          analysisProgress,
+                                          finalStats
+                                      }) {
     return (
         <Button
             onClick={onAnalyze}
