@@ -108,7 +108,8 @@ export async function POST() {
                         .filter(result => result.status === 'fulfilled' && result.value !== null)
                         .map(result => result.value);
 
-            allEmailDetails.push(...validResults);
+                    allEmailDetails.push(...validResults);
+                    analyzedCount += batch.length;
 
                     const percentage = Math.round((analyzedCount / messagesToAnalyze.length) * 100);
                     controller.enqueue(encoder.encode(`data: ${JSON.stringify({
