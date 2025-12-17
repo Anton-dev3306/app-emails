@@ -30,7 +30,7 @@ export default function SubscriptionCard({
                             {subscription.frequency}
                         </Badge>
                         <Badge color="green" variant="soft">
-                            {subscription.category}
+                            {subscription.totalEmails} correos
                         </Badge>
                         {isMarkedAsSpam && (
                             <Badge color="orange" variant="soft">
