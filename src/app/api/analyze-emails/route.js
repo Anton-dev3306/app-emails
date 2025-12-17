@@ -25,7 +25,7 @@ export async function POST(request) {
             access_token: session.accessToken
         });
 
-        const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+                const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify({
                     type: 'start',
