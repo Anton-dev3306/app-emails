@@ -32,7 +32,7 @@ export async function POST(req) {
         let iterations = 0;
         const maxIterations = 50;
 
-        console.log(`Búsqueda EXHAUSTIVA en spam de ${senderEmail}. Total esperado: ${totalEmails || 'desconocido'}`);
+      
 
         do {
             try {
