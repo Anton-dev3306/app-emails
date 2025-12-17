@@ -24,7 +24,15 @@ export default function DashboardView({
                                           onToggleSpam,
                   
                                           notification,
-                                          clearNotification
+                                          clearNotification,
+                                          // Bulk spam props
+                                          isProcessingBulk,
+                                          bulkStatus,
+                                          bulkProgress,
+                                          allMarkedAsSpam,
+                                          onMarkAllAsSpam,
+                                          onUnmarkAllAsSpam,
+                                          onStopBulkProcess
                                       }) {
     const [selectedGroupId, setSelectedGroupId] = useState('all');
 
