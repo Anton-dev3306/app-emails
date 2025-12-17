@@ -7,7 +7,14 @@ export function useEmailAnalysis(userEmail) {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [analysisStatus, setAnalysisStatus] = useState(null);
     const [subscriptions, setSubscriptions] = useState([]);
-// Cargar cache al montar el componente
+    const [analysisProgress, setAnalysisProgress] = useState({
+        current: 0,
+        total: 0,
+        percentage: 0,
+        phase: ''
+    });
+    const [finalStats, setFinalStats] = useState(null);
+
     useEffect(() => {
         if (userEmail) {
             loadFromCache();
