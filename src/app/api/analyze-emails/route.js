@@ -3,9 +3,13 @@ import { google } from 'googleapis';
 import { NextResponse } from 'next/server';
 import { authOptions } from '../auth/[...nextauth]/route';
 
-export async function POST() {
-    try {
-        const session = await getServerSession(authOptions);
+export async function POST(request) {
+    const encoder = new TextEncoder();
+
+    const stream = new ReadableStream({
+        async start(controller) {
+            try {
+                const session = await getServerSession(authOptions);
 
         if (!session?.accessToken) {
             return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
