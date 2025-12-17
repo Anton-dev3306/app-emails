@@ -75,7 +75,7 @@ export default function Home() {
         return (
             <LandingPage
                 onGetStarted={handleGetStarted}
-                isLoading={isSigningIn}
+                isSigningIn={isSigningIn}
             />
         );
     }
