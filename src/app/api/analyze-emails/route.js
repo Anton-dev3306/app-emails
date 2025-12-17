@@ -255,6 +255,14 @@ export async function POST() {
     }
 }
 
+    return new Response(stream, {
+        headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+        },
+    });
+}
 
 function extractEmail(email) {
     let senderEmail = null;
