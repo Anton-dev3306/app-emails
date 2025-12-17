@@ -59,7 +59,7 @@ export default function DashboardView({
 
                             <Separator size="4" mb="6" />
 
-                            <Flex justify="between" align="center" gap="3" mb="4">
+                            <Flex direction="column" gap="3" mb="4">
                                 <AnalyzeButton
                                     isAnalyzing={isAnalyzing}
                                     onAnalyze={onAnalyze}
