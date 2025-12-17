@@ -89,20 +89,20 @@ export async function POST() {
 
                         const headers = detail.data.payload?.headers || [];
 
-                        return {
-                            from: headers.find(h => h.name === 'From')?.value || '',
-                            subject: headers.find(h => h.name === 'Subject')?.value || '',
-                            date: headers.find(h => h.name === 'Date')?.value || '',
-                            listUnsubscribe: headers.find(h => h.name === 'List-Unsubscribe')?.value || '',
-                            listId: headers.find(h => h.name === 'List-Id')?.value || '',
-                            returnPath: headers.find(h => h.name === 'Return-Path')?.value || '',
-                            messageId: messageId
-                        };
-                    } catch {
-                        return null;
-                    }
-                })
-            );
+                                return {
+                                    from: headers.find(h => h.name === 'From')?.value || '',
+                                    subject: headers.find(h => h.name === 'Subject')?.value || '',
+                                    date: headers.find(h => h.name === 'Date')?.value || '',
+                                    listUnsubscribe: headers.find(h => h.name === 'List-Unsubscribe')?.value || '',
+                                    listId: headers.find(h => h.name === 'List-Id')?.value || '',
+                                    returnPath: headers.find(h => h.name === 'Return-Path')?.value || '',
+                                    messageId: messageId
+                                };
+                            } catch {
+                                return null;
+                            }
+                        })
+                    );
 
             const validResults = batchResults
                 .filter(result => result.status === 'fulfilled' && result.value !== null)
