@@ -44,7 +44,7 @@ export async function POST(req) {
                     includeSpamTrash: true 
                 });
 
-        const messages = searchResponse.data.messages || [];
+                const messages = searchResponse.data.messages || [];
 
         if (messages.length === 0) {
             return NextResponse.json({
