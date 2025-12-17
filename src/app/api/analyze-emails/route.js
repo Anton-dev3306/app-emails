@@ -110,10 +110,17 @@ export async function POST() {
 
             allEmailDetails.push(...validResults);
 
-            if (index < batches.length - 1) {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            }
-        }
+                    const percentage = Math.round((analyzedCount / messagesToAnalyze.length) * 100);
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                        type: 'progress',
+                        current: analyzedCount,
+                        total: messagesToAnalyze.length,
+                        percentage: percentage,
+                        message: `${analyzedCount} correos analizados...`
+                    })}\n\n`));
+
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
 
                 // Fase 3: Agrupar y contar
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify({
