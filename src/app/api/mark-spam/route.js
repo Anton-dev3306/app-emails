@@ -136,7 +136,7 @@ export async function POST(req) {
 
         return NextResponse.json({
             success: true,
-            message: 'Newsletters marcadas como spam exitosamente',
+            message: `${markedCount} correos marcados como spam`,
             details: {
                 totalNewslettersFound: allNewsletterMessages.length,
                 markedAsSpam: markedCount,
