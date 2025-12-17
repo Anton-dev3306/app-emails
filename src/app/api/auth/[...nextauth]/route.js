@@ -23,7 +23,7 @@ export const authOptions = {
     ],
     callbacks: {
         async jwt({ token, account, trigger }) {
-            // Inicial o actualización del token
+            // Inicializacion o actualización del token
             if (account) {
                 token.accessToken = account.access_token;
                 token.refreshToken = account.refresh_token;
