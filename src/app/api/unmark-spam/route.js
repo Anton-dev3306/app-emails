@@ -54,8 +54,11 @@ export async function POST(req) {
                 details: {
                     totalFound: 0,
                     restoredToInbox: 0,
-                    filterRemoved: false
-                }
+                    filtersRemoved: 0,
+                    senderEmail,
+                    senderName: sender
+                },
+                summary: `No se encontraron correos en spam de ${sender}.`
             });
         }
 
