@@ -18,18 +18,23 @@ export async function POST() {
 
         const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-        const queries = [
-            'list-unsubscribe',
-            'list-id',
-            'unsubscribe',
-            'newsletter',
-            'subscription',
-            'mailing list',
-            'automated',
-            'no-reply OR noreply',
-            'category:promotions',
-            'category:updates'
-        ];
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    type: 'start',
+                    message: 'Iniciando análisis...'
+                })}\n\n`));
+
+                const queries = [
+                    'list-unsubscribe',
+                    'list-id',
+                    'unsubscribe',
+                    'newsletter',
+                    'subscription',
+                    'mailing list',
+                    'automated',
+                    'no-reply OR noreply',
+                    'category:promotions',
+                    'category:updates'
+                ];
 
                 let allMessageIds = new Set();
 
