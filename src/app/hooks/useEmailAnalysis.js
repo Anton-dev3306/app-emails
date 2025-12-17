@@ -109,7 +109,9 @@ export function useEmailAnalysis(userEmail) {
                     break;
                 }
 
-            const data = await response.json();
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
 
             if (data.subscriptions && data.subscriptions.length > 0) {
                 setSubscriptions(data.subscriptions);
