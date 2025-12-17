@@ -37,8 +37,8 @@ export function useSubscriptions(userEmail) {
 
     const handleSpamToggle = useCallback(
         async (subscription) => {
-            const { senderEmail, sender } = subscription;
-            const current = subscriptionStates[senderEmail] || {};
+            const { email, sender, totalEmails } = subscription;
+            const current = subscriptionStates[email] || {};
             if (current.loadingSpam) return;
 
             const isSpam = current.markedAsSpam;
