@@ -26,12 +26,23 @@ export async function POST(req) {
 
         const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-        //Analizar correos para identificar patrones de newsletter
-        const searchResponse = await gmail.users.messages.list({
-            userId: 'me',
-            maxResults: 20,
-            q: `from:${senderEmail}`
-        });
+        //Proceso de busqueda de todos los correos del remitente
+        let allMessages = [];
+        let pageToken = null;
+        let iterations = 0;
+        const maxIterations = 50; // Aumentado para búsquedas exhaustivas
+
+        console.log(`🔍 Búsqueda EXHAUSTIVA de correos de ${senderEmail}. Total esperado: ${totalEmails || 'desconocido'}`);
+
+        do {
+            try {
+                const searchResponse = await gmail.users.messages.list({
+                    userId: 'me',
+                    maxResults: 500,
+                    q: `from:${senderEmail}`,
+                    pageToken: pageToken,
+                    includeSpamTrash: true // ← IMPORTANTE: incluir spam y papelera
+                });
 
         const messages = searchResponse.data.messages || [];
 
