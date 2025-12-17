@@ -62,11 +62,11 @@ export async function POST() {
                             }
                         } while (pageToken);
 
-                await new Promise(resolve => setTimeout(resolve, 100));
-            } catch (error) {
-                // error silencioso
-            }
-        }
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    } catch (error) {
+                        // Error silencioso
+                    }
+                }
 
                 if (allMessageIds.size === 0) {
                     controller.enqueue(encoder.encode(`data: ${JSON.stringify({
