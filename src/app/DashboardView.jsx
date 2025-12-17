@@ -20,7 +20,6 @@ export default function DashboardView({
                                           analysisProgress,
                                           finalStats,
                                           subscriptionStates,
-                                          onToggleSubscription,
                                           onToggleSpam,
                   
                                           notification,
