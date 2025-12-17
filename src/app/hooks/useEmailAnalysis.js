@@ -20,7 +20,7 @@ export function useEmailAnalysis(userEmail) {
             loadFromCache();
         }
     }, [userEmail]);
-// Cargar suscripciones desde localStorage
+
     const loadFromCache = () => {
         try {
             const cacheKey = `${STORAGE_KEY}_${userEmail}`;
