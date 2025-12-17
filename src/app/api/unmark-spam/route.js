@@ -162,7 +162,7 @@ export async function POST(req) {
     }
 }
 
-// Función auxiliar GET para verificar cuántos correos hay en spam
+// Función GET sin cambios
 export async function GET(req) {
     try {
         const session = await getServerSession(authOptions);
