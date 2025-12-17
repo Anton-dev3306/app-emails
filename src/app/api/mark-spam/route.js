@@ -41,7 +41,7 @@ export async function POST(req) {
                     maxResults: 500,
                     q: `from:${senderEmail}`,
                     pageToken: pageToken,
-                    includeSpamTrash: true /
+                    includeSpamTrash: true 
                 });
 
         const messages = searchResponse.data.messages || [];
