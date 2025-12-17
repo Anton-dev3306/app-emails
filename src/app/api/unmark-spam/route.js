@@ -29,6 +29,8 @@ export async function POST(req) {
         //Proceso de busqueda de TODOS los correos en spam del remitente
         let allSpamMessages = [];
         let pageToken = null;
+        let iterations = 0;
+        const maxIterations = 50;
 
         for (let i = 0; i < 5; i++) {
             const searchResponse = await gmail.users.messages.list({
