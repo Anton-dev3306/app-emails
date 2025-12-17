@@ -113,8 +113,11 @@ export function useEmailAnalysis(userEmail) {
                 const lines = buffer.split('\n');
                 buffer = lines.pop() || '';
 
-            if (data.subscriptions && data.subscriptions.length > 0) {
-                setSubscriptions(data.subscriptions);
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const jsonStr = line.slice(6).trim();
+                            if (!jsonStr) continue;
 
                 saveToCache(data.subscriptions);
 
