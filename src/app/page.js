@@ -63,8 +63,7 @@ export default function Home() {
         }
     };
 
-    // Loading inicial
-    if (status === "loading") {
+    if (status === 'loading') {
         return (
             <Theme>
                 <Flex
