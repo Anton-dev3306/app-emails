@@ -87,7 +87,7 @@ export async function POST() {
                             metadataHeaders: ['From', 'Subject', 'Date', 'List-Unsubscribe', 'List-Id', 'Return-Path']
                         });
 
-                        const headers = detail.data.payload?.headers || [];
+                                const headers = detail.data.payload?.headers || [];
 
                                 return {
                                     from: headers.find(h => h.name === 'From')?.value || '',
