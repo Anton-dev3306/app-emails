@@ -54,7 +54,7 @@ export function useSubscriptions(userEmail) {
                 }
             );
 
-            updateState(senderEmail, {
+            updateState(email, {
                 loadingSpam: false,
                 markedAsSpam: success ? !isSpam : isSpam,
                 errorSpam: !success,
