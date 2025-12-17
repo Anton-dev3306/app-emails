@@ -48,7 +48,7 @@ export async function POST(req) {
 
                 if (messages.length > 0) {
                     allMessages = [...allMessages, ...messages];
-                    console.log(`📧 Iteración ${iterations + 1}: +${messages.length} correos. Total: ${allMessages.length}/${totalEmails || '?'}`);
+                    console.log(`Iteración ${iterations + 1}: +${messages.length} correos. Total: ${allMessages.length}/${totalEmails || '?'}`);
                 }
 
                 pageToken = searchResponse.data.nextPageToken;
