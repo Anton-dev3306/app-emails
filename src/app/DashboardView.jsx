@@ -66,6 +66,19 @@ export default function DashboardView({
                                     analysisProgress={analysisProgress}
                                     finalStats={finalStats}
                                 />
+
+                                {subscriptions.length > 0 && (
+                                    <BulkSpamButton
+                                        isProcessing={isProcessingBulk}
+                                        allMarkedAsSpam={allMarkedAsSpam}
+                                        bulkProgress={bulkProgress}
+                                        bulkStatus={bulkStatus}
+                                        subscriptions={subscriptions}
+                                        onMarkAll={onMarkAllAsSpam}
+                                        onUnmarkAll={onUnmarkAllAsSpam}
+                                        onStopProcess={onStopBulkProcess}
+                                    />
+                                )}
                             </Flex>
 
                             <StatusMessage status={analysisStatus} />
