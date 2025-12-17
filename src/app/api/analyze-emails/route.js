@@ -272,8 +272,12 @@ function determineCategoryFromEmail(sender, email, subjects = []) {
     if (text.match(/medium|substack|blog|article|post/)) return 'Blogs';
     if (text.match(/security|alert|notification|update|verification/)) return 'Seguridad';
 
-    return 'Otro';
-}
+    if (!senderEmail && email.returnPath) {
+        const returnMatch = email.returnPath.match(/<(.+?)>/) || email.returnPath.match(/(\S+@\S+\.\S+)/);
+        if (returnMatch) {
+            senderEmail = returnMatch[1]?.trim().toLowerCase();
+        }
+    }
 
     if (!senderEmail && email.from.includes('@')) {
         senderEmail = email.from.trim().toLowerCase();
