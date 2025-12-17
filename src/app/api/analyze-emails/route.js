@@ -237,11 +237,8 @@ export async function POST() {
             reliability: getReliabilityCounts(subscriptions)
         };
 
-        return NextResponse.json({
-            subscriptions,
-            ...stats,
-            timestamp: new Date().toISOString()
-        });
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalData)}\n\n`));
+                controller.close();
 
             } catch (error) {
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify({
