@@ -56,15 +56,16 @@ export async function POST() {
             }
         }
 
-        if (allMessageIds.size === 0) {
-            return NextResponse.json({
-                subscriptions: [],
-                totalAnalyzed: 0,
-                totalUnique: 0,
-                message: 'No se encontraron correos que coincidan con los criterios de búsqueda',
-                timestamp: new Date().toISOString()
-            });
-        }
+                if (allMessageIds.size === 0) {
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                        type: 'complete',
+                        subscriptions: [],
+                        totalAnalyzed: 0,
+                        message: 'No se encontraron newsletters'
+                    })}\n\n`));
+                    controller.close();
+                    return;
+                }
 
         const messagesToAnalyze = Array.from(allMessageIds).slice(0, 300);
 
