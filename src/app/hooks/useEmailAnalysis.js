@@ -60,6 +60,7 @@ export function useEmailAnalysis(userEmail) {
             const cacheKey = `${STORAGE_KEY}_${userEmail}`;
             const data = {
                 subscriptions: subs,
+                totalAnalyzed: totalAnalyzed,
                 timestamp: Date.now(),
                 userEmail: userEmail
             };
