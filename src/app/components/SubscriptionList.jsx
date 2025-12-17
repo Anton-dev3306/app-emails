@@ -8,7 +8,10 @@ export default function SubscriptionList({
                                              subscriptions,
                                              subscriptionStates,
                                              onToggleSubscription,
-                                             onToggleSpam
+                                             onToggleSpam,
+                                             groups = [],
+                                             onAddToGroup,
+                                             onRemoveFromGroup
                                          }) {
 
     return (
