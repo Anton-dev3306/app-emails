@@ -114,8 +114,6 @@ export async function POST(req) {
         // Crear filtro para correos futuros
         let filterCreated = false;
         try {
-            const filterCriteria = buildFilterCriteria(senderEmail, newsletterPatterns);
-
             await gmail.users.settings.filters.create({
                 userId: 'me',
                 requestBody: {
