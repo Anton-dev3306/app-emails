@@ -115,15 +115,11 @@ export async function POST() {
             }
         }
 
-        if (allEmailDetails.length === 0) {
-            return NextResponse.json({
-                subscriptions: [],
-                totalAnalyzed: 0,
-                totalUnique: 0,
-                message: 'No se pudieron procesar los correos encontrados',
-                timestamp: new Date().toISOString()
-            });
-        }
+                // Fase 3: Agrupar y contar
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    type: 'phase',
+                    message: 'Agrupando newsletters y contando correos exactos...'
+                })}\n\n`));
 
                 const senderMap = new Map();
 
