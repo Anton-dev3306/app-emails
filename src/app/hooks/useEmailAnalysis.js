@@ -55,7 +55,7 @@ export function useEmailAnalysis(userEmail) {
         }
     };
 
-    const saveToCache = (subs) => {
+    const saveToCache = (subs, totalAnalyzed) => {
         try {
             const cacheKey = `${STORAGE_KEY}_${userEmail}`;
             const data = {
