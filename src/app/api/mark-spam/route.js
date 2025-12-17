@@ -138,7 +138,7 @@ export async function POST(req) {
             success: true,
             message: `${markedCount} correos marcados como spam`,
             details: {
-                totalNewslettersFound: allNewsletterMessages.length,
+                totalFound: allMessages.length,
                 markedAsSpam: markedCount,
                 successRate: successRate,
                 filterCreated,
