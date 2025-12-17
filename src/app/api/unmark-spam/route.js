@@ -32,20 +32,60 @@ export async function POST(req) {
         let iterations = 0;
         const maxIterations = 50;
 
-        for (let i = 0; i < 5; i++) {
-            const searchResponse = await gmail.users.messages.list({
-                userId: 'me',
-                maxResults: 100,
-                q: `from:${senderEmail} in:spam`,
-                pageToken: pageToken
-            });
+        console.log(`Búsqueda EXHAUSTIVA en spam de ${senderEmail}. Total esperado: ${totalEmails || 'desconocido'}`);
 
-            const messages = searchResponse.data.messages || [];
-            allSpamMessages = [...allSpamMessages, ...messages];
+        do {
+            try {
+                const searchResponse = await gmail.users.messages.list({
+                    userId: 'me',
+                    maxResults: 500,
+                    q: `from:${senderEmail}`,
+                    labelIds: ['SPAM'],
+                    pageToken: pageToken,
+                    includeSpamTrash: true
+                });
 
-            pageToken = searchResponse.data.nextPageToken;
-            if (!pageToken) break;
-        }
+                const messages = searchResponse.data.messages || [];
+
+                if (messages.length > 0) {
+                    allSpamMessages = [...allSpamMessages, ...messages];
+                    console.log(`Iteración ${iterations + 1}: +${messages.length} en spam. Total: ${allSpamMessages.length}`);
+                }
+
+                pageToken = searchResponse.data.nextPageToken;
+                iterations++;
+
+                // Continuar hasta que no haya más páginas
+                if (pageToken) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+            } catch (error) {
+                console.error('Error en búsqueda:', error);
+                // Si falla con labelIds, intentar con query
+                if (error.message.includes('label')) {
+                    console.log('⚠Reintentando con query `in:spam`...');
+                    try {
+                        const searchResponse = await gmail.users.messages.list({
+                            userId: 'me',
+                            maxResults: 500,
+                            q: `from:${senderEmail} in:spam`,
+                            pageToken: pageToken,
+                            includeSpamTrash: true
+                        });
+                        const messages = searchResponse.data.messages || [];
+                        if (messages.length > 0) {
+                            allSpamMessages = [...allSpamMessages, ...messages];
+                        }
+                        pageToken = searchResponse.data.nextPageToken;
+                    } catch (retryError) {
+                        console.error('Reintento falló:', retryError);
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+        } while (pageToken && iterations < maxIterations);
 
         if (allSpamMessages.length === 0) {
             return NextResponse.json({
