@@ -153,18 +153,18 @@ export async function POST() {
                 senderName = senderEmail.split('@')[0];
             }
 
-            if (!senderMap.has(senderEmail)) {
-                senderMap.set(senderEmail, {
-                    sender: senderName,
-                    senderEmail: senderEmail,
-                    totalEmails: 0,
-                    hasUnsubscribeLink: false,
-                    hasListId: false,
-                    subjects: [],
-                    dates: [],
-                    messageIds: []
-                });
-            }
+                    if (!senderMap.has(senderEmail)) {
+                        senderMap.set(senderEmail, {
+                            email: senderEmail,
+                            names: new Map(),
+                            totalEmails: 0,
+                            hasUnsubscribeLink: false,
+                            hasListId: false,
+                            subjects: [],
+                            dates: [],
+                            messageIds: []
+                        });
+                    }
 
                     const senderData = senderMap.get(senderEmail);
                     senderData.totalEmails++;
