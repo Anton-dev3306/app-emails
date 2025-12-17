@@ -59,7 +59,8 @@ export async function POST(req) {
             });
         }
 
-        // Mover TODOS los correos de spam a la bandeja de entrada
+
+        // Restaurar TODOS los correos en lotes grandes
         let restoredCount = 0;
         const batchSize = 1000;
         const batches = Math.ceil(allSpamMessages.length / batchSize);
