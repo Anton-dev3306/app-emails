@@ -24,6 +24,7 @@ export default function SubscriptionCard({
                     <Text size="2" color="gray" mb="2" style={{ display: 'block' }}>
                         {subscription.email}
                     </Text>
+
                     <Flex gap="2" wrap="wrap">
                         <Badge color="blue" variant="soft">
                             {subscription.frequency}
