@@ -89,8 +89,10 @@ export async function POST(req) {
         let markedCount = 0;
         const batchSize = 1000;
 
-        for (let i = 0; i < allNewsletterMessages.length; i += batchSize) {
-            const batch = allNewsletterMessages.slice(i, i + batchSize);
+        console.log(`Marcando spam en ${batches} lotes de hasta ${batchSize} correos...`);
+
+        for (let i = 0; i < allMessages.length; i += batchSize) {
+            const batch = allMessages.slice(i, i + batchSize);
             const messageIds = batch.map(m => m.id);
 
             try {
