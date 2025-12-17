@@ -234,6 +234,8 @@ export function useEmailAnalysis(userEmail) {
         isAnalyzing,
         analysisStatus,
         subscriptions,
+        analysisProgress,
+        finalStats,
         handleAnalyzeEmails
     };
 }
