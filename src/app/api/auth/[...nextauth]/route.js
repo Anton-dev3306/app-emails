@@ -66,7 +66,7 @@ export const authOptions = {
         }
     },
     secret: process.env.NEXTAUTH_SECRET,
-    // Agregar eventos para manejar la desvinculación
+    //Proceso de la desvinculacion de la cuenta de gmail
     events: {
         async signOut({ token }) {
             if (token.accessToken) {
