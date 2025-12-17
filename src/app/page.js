@@ -88,6 +88,8 @@ export default function Home() {
             analysisStatus={analysisStatus}
             onAnalyze={handleAnalyzeEmails}
             subscriptions={subscriptions}
+            analysisProgress={analysisProgress}
+            finalStats={finalStats}
             subscriptionStates={subscriptionStates}
             onToggleSubscription={handleSubscriptionToggle}
             onToggleSpam={handleSpamToggle}
