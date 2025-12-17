@@ -25,9 +25,29 @@ export default function SubscriptionList({
 
     return (
         <Box mt="6">
-            <Text size="5" weight="bold" mb="4">
-                Suscripciones Encontradas ({subscriptions.length})
-            </Text>
+            <Flex direction="column" gap="4" mb="4">
+                <Text size="5" weight="bold">
+                    Remitentes encontrados ({subscriptions.length})
+                </Text>
+
+                <TextField.Root
+                    placeholder="Buscar remitente..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    size="3"
+                >
+                    <TextField.Slot>
+                        <MagnifyingGlassIcon height="16" width="16" />
+                    </TextField.Slot>
+                </TextField.Root>
+
+                {searchQuery && (
+                    <Text size="2" color="gray">
+                        {filteredSubscriptions.length} resultado{filteredSubscriptions.length !== 1 ? 's' : ''} encontrado{filteredSubscriptions.length !== 1 ? 's' : ''}
+                    </Text>
+                )}
+            </Flex>
+
             <Flex direction="column" gap="3">
                 {subscriptions.map((sub, index) => {
                     const state = subscriptionStates[sub.senderEmail] || {};
