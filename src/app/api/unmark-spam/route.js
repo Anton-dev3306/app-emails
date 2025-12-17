@@ -79,7 +79,12 @@ export async function POST(req) {
 
                 restoredCount += messageIds.length;
             } catch (error) {
-                console.error(`Error restaurando lote:`, error);
+                console.error(`Error en lote ${Math.floor(i/batchSize) + 1}:`, error.message);
+            }
+
+            // Pequeña pausa entre lotes
+            if (i + batchSize < allSpamMessages.length) {
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
         }
 
