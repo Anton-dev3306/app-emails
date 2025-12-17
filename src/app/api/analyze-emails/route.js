@@ -104,9 +104,9 @@ export async function POST() {
                         })
                     );
 
-            const validResults = batchResults
-                .filter(result => result.status === 'fulfilled' && result.value !== null)
-                .map(result => result.value);
+                    const validResults = batchResults
+                        .filter(result => result.status === 'fulfilled' && result.value !== null)
+                        .map(result => result.value);
 
             allEmailDetails.push(...validResults);
 
