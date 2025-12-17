@@ -129,6 +129,7 @@ export async function POST(req) {
                         removeLabelIds: []
                     }
                 });
+                console.log(`📬 ${messageIds.length} correos marcados como no leídos`);
             }
         } catch (error) {
             console.log('No se pudieron marcar como no leídos:', error);
