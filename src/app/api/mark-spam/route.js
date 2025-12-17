@@ -30,7 +30,7 @@ export async function POST(req) {
         let allMessages = [];
         let pageToken = null;
         let iterations = 0;
-        const maxIterations = 50; // Aumentado para búsquedas exhaustivas
+        const maxIterations = 50;
 
         console.log(`🔍 Búsqueda EXHAUSTIVA de correos de ${senderEmail}. Total esperado: ${totalEmails || 'desconocido'}`);
 
