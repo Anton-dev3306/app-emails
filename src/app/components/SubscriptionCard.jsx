@@ -41,7 +41,6 @@ export default function SubscriptionCard({
                 </Box>
 
                 <Flex direction="column" gap="2" style={{ flexShrink: 0 }}>
-
                     <Button
                         onClick={() => onToggleSpam(subscription)}
                         disabled={state.loadingSpam}
