@@ -46,7 +46,12 @@ export function useSubscriptions(userEmail) {
 
             const { success, data, error } = await apiRequest(
                 isSpam ? API.unmarkSpam : API.markSpam,
-                { senderEmail, sender, userEmail }
+                {
+                    senderEmail: email,
+                    sender,
+                    userEmail,
+                    totalEmails: totalEmails
+                }
             );
 
             updateState(senderEmail, {
