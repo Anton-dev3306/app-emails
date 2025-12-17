@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { X } from "lucide-react";
+import {LogOut, X} from "lucide-react";
+import {Button} from "@radix-ui/themes";
 
 export default function NotificationCard({ notification, onClose, duration = 5500 }) {
     if (!notification) return null;
