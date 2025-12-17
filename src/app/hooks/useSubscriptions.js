@@ -42,7 +42,7 @@ export function useSubscriptions(userEmail) {
             if (current.loadingSpam) return;
 
             const isSpam = current.markedAsSpam;
-            updateState(senderEmail, { loadingSpam: true, errorSpam: false });
+            updateState(email, { loadingSpam: true, errorSpam: false });
 
             const { success, data, error } = await apiRequest(
                 isSpam ? API.unmarkSpam : API.markSpam,
