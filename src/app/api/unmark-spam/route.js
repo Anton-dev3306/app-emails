@@ -108,6 +108,7 @@ export async function POST(req) {
                         id: filter.id
                     });
                     filtersRemoved++;
+                    console.log(`Filtro eliminado: ${filter.id}`);
                 }
             }
         } catch (error) {
