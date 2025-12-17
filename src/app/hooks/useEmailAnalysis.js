@@ -214,7 +214,6 @@ export function useEmailAnalysis(userEmail) {
                 type: 'error',
                 message: errorMessage
             });
-        } finally {
             setIsAnalyzing(false);
             setAnalysisProgress({ current: 0, total: 0, percentage: 0, phase: '' });
         }
