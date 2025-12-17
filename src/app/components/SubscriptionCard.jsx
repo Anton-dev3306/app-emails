@@ -20,9 +20,9 @@ export default function SubscriptionCard({
                     <Text weight="bold" size="3" mb="1">
                         {subscription.sender}
                     </Text>
-                    <br/>
-                    <Text size="2" color="gray" mb="2">
-                        {subscription.senderEmail}
+
+                    <Text size="2" color="gray" mb="2" style={{ display: 'block' }}>
+                        {subscription.email}
                     </Text>
                     <Flex gap="2" wrap="wrap">
                         <Badge color="blue" variant="soft">
