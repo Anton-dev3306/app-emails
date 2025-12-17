@@ -140,6 +140,7 @@ export async function POST(req) {
             details: {
                 totalFound: allSpamMessages.length,
                 restoredToInbox: restoredCount,
+                successRate: successRate,
                 filtersRemoved,
                 senderEmail,
                 senderName: sender,
