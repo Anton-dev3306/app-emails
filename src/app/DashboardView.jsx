@@ -93,7 +93,6 @@ export default function DashboardView({
                             <SubscriptionList
                                 subscriptions={subscriptions}
                                 subscriptionStates={subscriptionStates}
-                                onToggleSubscription={onToggleSubscription}
                                 onToggleSpam={onToggleSpam}
                             />
                         </Card>
