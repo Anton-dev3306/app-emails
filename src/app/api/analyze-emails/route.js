@@ -176,57 +176,81 @@ export async function POST() {
             if (email.listId) senderData.hasListId = true;
         });
 
-        const subscriptions = Array.from(senderMap.values())
-            .filter(s => {
-                return s.totalEmails >= 1 && (
-                    s.hasUnsubscribeLink ||
-                    s.hasListId ||
-                    s.totalEmails >= 3 ||
-                    s.senderEmail.includes('noreply') ||
-                    s.senderEmail.includes('no-reply') ||
-                    s.senderEmail.includes('newsletter') ||
-                    s.senderEmail.includes('notification')
-                );
-            })
-            .map(s => {
-                const frequency = s.totalEmails > 20 ? 'Muy frecuente' :
-                    s.totalEmails > 10 ? 'Frecuente' :
-                        s.totalEmails > 5 ? 'Regular' :
-                            s.totalEmails > 2 ? 'Ocasional' : 'Esporádica';
+                                const exactCount = searchResult.data.resultSizeEstimate || senderData.totalEmails;
 
-                const category = determineCategoryFromEmail(
-                    s.sender,
-                    s.senderEmail,
-                    s.subjects
-                );
+                                let mostCommonName = senderEmail.split('@')[0];
+                                let maxCount = 0;
 
-                const engagement = s.totalEmails > 15 ? 'Alto' :
-                    s.totalEmails > 8 ? 'Medio' : 'Bajo';
+                                const namesArray = Array.from(senderData.names.entries());
+                                for (const [name, count] of namesArray) {
+                                    if (count > maxCount) {
+                                        maxCount = count;
+                                        mostCommonName = name;
+                                    }
+                                }
 
-                let reliabilityScore = 0;
-                if (s.hasUnsubscribeLink) reliabilityScore += 2;
-                if (s.hasListId) reliabilityScore += 2;
-                if (s.totalEmails > 5) reliabilityScore += 1;
+                                return {
+                                    sender: mostCommonName,
+                                    email: senderEmail,
+                                    totalEmails: exactCount,
+                                    frequency: calculateFrequency(exactCount),
+                                    hasUnsubscribeLink: senderData.hasUnsubscribeLink,
+                                    hasListId: senderData.hasListId,
+                                    recentSubjects: [...senderData.subjects].slice(-3).reverse(),
+                                    lastEmailDate: senderData.dates[senderData.dates.length - 1],
+                                    firstEmailDate: senderData.dates[0]
+                                };
+                            } catch (error) {
+                                let mostCommonName = senderEmail.split('@')[0];
+                                let maxCount = 0;
 
-                const reliability = reliabilityScore >= 4 ? 'Alta' :
-                    reliabilityScore >= 2 ? 'Media' : 'Baja';
+                                const namesArray = Array.from(senderData.names.entries());
+                                for (const [name, count] of namesArray) {
+                                    if (count > maxCount) {
+                                        maxCount = count;
+                                        mostCommonName = name;
+                                    }
+                                }
 
-                return {
-                    sender: s.sender,
-                    senderEmail: s.senderEmail,
-                    totalEmails: s.totalEmails,
-                    category,
-                    frequency,
-                    engagement,
-                    reliability,
-                    hasUnsubscribeLink: s.hasUnsubscribeLink,
-                    hasListId: s.hasListId,
-                    recentSubjects: s.subjects.slice(-3).reverse(),
-                    lastEmailDate: s.dates[s.dates.length - 1],
-                    firstEmailDate: s.dates[0]
-                };
-            })
-            .sort((a, b) => b.totalEmails - a.totalEmails);
+                                return {
+                                    sender: mostCommonName,
+                                    email: senderEmail,
+                                    totalEmails: senderData.totalEmails,
+                                    frequency: calculateFrequency(senderData.totalEmails),
+                                    hasUnsubscribeLink: senderData.hasUnsubscribeLink,
+                                    hasListId: senderData.hasListId,
+                                    recentSubjects: [...senderData.subjects].slice(-3).reverse(),
+                                    lastEmailDate: senderData.dates[senderData.dates.length - 1],
+                                    firstEmailDate: senderData.dates[0]
+                                };
+                            }
+                        })
+                    );
+
+                    subscriptionsWithExactCount.push(...batchResults);
+                    processedCount += batch.length;
+
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                        type: 'counting',
+                        current: processedCount,
+                        total: senderEntries.length,
+                        message: `Conteo exacto: ${processedCount}/${senderEntries.length} remitentes procesados...`
+                    })}\n\n`));
+                }
+
+                const subscriptions = subscriptionsWithExactCount
+                    .filter(s => {
+                        return s.totalEmails >= 1 && (
+                            s.hasUnsubscribeLink ||
+                            s.hasListId ||
+                            s.totalEmails >= 3 ||
+                            s.email.includes('noreply') ||
+                            s.email.includes('no-reply') ||
+                            s.email.includes('newsletter') ||
+                            s.email.includes('notification')
+                        );
+                    })
+                    .sort((a, b) => b.totalEmails - a.totalEmails);
 
                 const finalData = {
                     type: 'complete',
