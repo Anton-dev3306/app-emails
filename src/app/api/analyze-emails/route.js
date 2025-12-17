@@ -46,10 +46,8 @@ export async function POST() {
                                 pageToken: pageToken
                             });
 
-                const messages = result.data.messages || [];
-                const beforeCount = allMessageIds.size;
-
-                messages.forEach(msg => allMessageIds.add(msg.id));
+                            const messages = result.data.messages || [];
+                            messages.forEach(msg => allMessageIds.add(msg.id));
 
                             controller.enqueue(encoder.encode(`data: ${JSON.stringify({
                                 type: 'collecting',
