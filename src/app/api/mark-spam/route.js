@@ -56,7 +56,7 @@ export async function POST(req) {
 
                 // Continuar hasta que no haya más páginas O alcancemos el total esperado
                 if (pageToken && totalEmails && allMessages.length >= totalEmails) {
-                    console.log(`✅ Alcanzado el total esperado: ${allMessages.length}`);
+                    console.log(`Alcanzado el total esperado: ${allMessages.length}`);
                     break;
                 }
 
