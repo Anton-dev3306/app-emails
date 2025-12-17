@@ -11,9 +11,14 @@ export async function POST(request) {
             try {
                 const session = await getServerSession(authOptions);
 
-        if (!session?.accessToken) {
-            return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-        }
+                if (!session?.accessToken) {
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                        type: 'error',
+                        error: 'No autorizado'
+                    })}\n\n`));
+                    controller.close();
+                    return;
+                }
 
         const oauth2Client = new google.auth.OAuth2();
         oauth2Client.setCredentials({
