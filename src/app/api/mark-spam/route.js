@@ -144,12 +144,7 @@ export async function POST(req) {
                 filterCreated,
                 senderEmail,
                 senderName: sender,
-                newsletterPatterns: {
-                    hasListUnsubscribe: newsletterPatterns.hasListUnsubscribe,
-                    hasNewsletterKeywords: newsletterPatterns.hasNewsletterKeywords,
-                    subjectPattern: newsletterPatterns.subjectPattern,
-                    hasUnsubscribeLink: newsletterPatterns.hasUnsubscribeLink
-                }
+                iterations: iterations
             },
             summary: filterCreated
                 ? `${markedCount} newsletters marcadas como spam y filtro creado. Las futuras newsletters de ${senderEmail} irán automáticamente a spam, pero otros correos importantes del remitente llegarán normalmente.`
