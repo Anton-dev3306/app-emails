@@ -78,6 +78,8 @@ export function useEmailAnalysis(userEmail) {
         }
 
         setIsAnalyzing(true);
+        setFinalStats(null);
+        setAnalysisProgress({ current: 0, total: 0, percentage: 0, phase: '' });
         setAnalysisStatus({
             type: 'analyzing',
             message: 'Analizando tus correos... Esto puede tomar un momento'
