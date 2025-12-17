@@ -81,9 +81,7 @@ export default function Home() {
     }
 
     return (
-        <>
-
-            <DashboardView
+        <DashboardView
             session={session}
             onSignOut={handleSignOut}
             isAnalyzing={isAnalyzing}
