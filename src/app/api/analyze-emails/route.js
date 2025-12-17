@@ -291,12 +291,7 @@ function getFrequencyCounts(subscriptions) {
     return counts;
 }
 
-function getReliabilityCounts(subscriptions) {
-    const counts = {};
-    subscriptions.forEach(sub => {
-        counts[sub.reliability] = (counts[sub.reliability] || 0) + 1;
-    });
-    return counts;
+    return senderName;
 }
 
 function calculateFrequency(totalEmails) {
