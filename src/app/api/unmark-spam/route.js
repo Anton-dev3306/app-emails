@@ -63,7 +63,7 @@ export async function POST(req) {
                 console.error('Error en búsqueda:', error);
                 // Si falla con labelIds, intentar con query
                 if (error.message.includes('label')) {
-                    console.log('⚠Reintentando con query `in:spam`...');
+                    console.log('Reintentando con query `in:spam`...');
                     try {
                         const searchResponse = await gmail.users.messages.list({
                             userId: 'me',
