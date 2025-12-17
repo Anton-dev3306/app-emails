@@ -132,6 +132,8 @@ export async function POST(req) {
             console.log('Error creando filtro:', error.message);
         }
 
+        const successRate = Math.round((markedCount / allMessages.length) * 100);
+
         return NextResponse.json({
             success: true,
             message: 'Newsletters marcadas como spam exitosamente',
