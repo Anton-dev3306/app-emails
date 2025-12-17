@@ -62,6 +62,9 @@ export async function POST(req) {
         // Mover TODOS los correos de spam a la bandeja de entrada
         let restoredCount = 0;
         const batchSize = 1000;
+        const batches = Math.ceil(allSpamMessages.length / batchSize);
+
+        console.log(`Restaurando en ${batches} lotes de hasta ${batchSize} correos...`);
 
         for (let i = 0; i < allSpamMessages.length; i += batchSize) {
             const batch = allSpamMessages.slice(i, i + batchSize);
