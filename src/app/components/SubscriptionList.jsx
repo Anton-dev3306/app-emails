@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Box, Text, Flex, TextField } from "@radix-ui/themes";
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import SubscriptionCard from './SubscriptionCard';
+
 export default function SubscriptionList({
                                              subscriptions,
                                              subscriptionStates,
