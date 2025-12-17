@@ -60,8 +60,11 @@ export function useSubscriptions(userEmail) {
             if (success && data) {
                 setNotification({
                     type: isSpam ? 'success' : 'warning',
-                    message: data.summary,   // ← Aquí llega el "3 correos marcados como spam"
-                    details: data.details    // ← JSON completo
+                    message: isSpam
+                        ? `${markedCount} correos restaurados de ${totalFound} encontrados`
+                        : `${markedCount} correos marcados como spam de ${totalFound} encontrados`,
+                    details: data.details,
+                    summary: data.summary
                 });
             }
 
