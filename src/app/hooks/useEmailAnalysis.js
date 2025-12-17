@@ -216,6 +216,7 @@ export function useEmailAnalysis(userEmail) {
             });
         } finally {
             setIsAnalyzing(false);
+            setAnalysisProgress({ current: 0, total: 0, percentage: 0, phase: '' });
         }
     };
 
