@@ -147,8 +147,8 @@ export async function POST(req) {
                 iterations: iterations
             },
             summary: filterCreated
-                ? `${markedCount} newsletters marcadas como spam y filtro creado. Las futuras newsletters de ${senderEmail} irán automáticamente a spam, pero otros correos importantes del remitente llegarán normalmente.`
-                : `${markedCount} newsletters marcadas como spam.`
+                ? `${markedCount} de ${allMessages.length} correos (${successRate}%) de ${sender} marcados como spam y filtro creado.`
+                : `${markedCount} de ${allMessages.length} correos (${successRate}%) de ${sender} marcados como spam.`
         });
 
     } catch (error) {
