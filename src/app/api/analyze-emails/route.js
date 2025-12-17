@@ -283,13 +283,18 @@ function getCategoryCounts(subscriptions) {
     return counts;
 }
 
-function getFrequencyCounts(subscriptions) {
-    const counts = {};
-    subscriptions.forEach(sub => {
-        counts[sub.frequency] = (counts[sub.frequency] || 0) + 1;
-    });
-    return counts;
-}
+function extractSenderName(fromHeader, senderEmail) {
+    let senderName = fromHeader.split('<')[0].trim().replace(/['"]/g, '');
+
+    if (!senderName || senderName === senderEmail || senderName.includes('@')) {
+        const emailPart = senderEmail.split('@')[0];
+
+        senderName = emailPart
+            .replace(/[._-]/g, ' ')
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    }
 
     return senderName;
 }
