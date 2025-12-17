@@ -7,7 +7,6 @@ import AnalyzeButton from './components/AnalyzeButton';
 import BulkSpamButton from './components/BulkSpamButton';
 import StatusMessage from './components/StatusMessage';
 import SubscriptionList from './components/SubscriptionList';
-
 import NotificationCard from './components/NotificationCard';
 
 export default function DashboardView({

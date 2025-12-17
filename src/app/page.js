@@ -1,18 +1,11 @@
 "use client";
-import "@radix-ui/themes/styles.css";
-import { Theme, Flex } from "@radix-ui/themes";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { Loader } from "lucide-react";
+import { useSession, signIn, signOut } from 'next-auth/react';
 import { useState } from 'react';
-
-// Vistas
 import LandingPage from './LandingPage';
 import DashboardView from './DashboardView';
-
-// Hooks
 import { useEmailAnalysis } from './hooks/useEmailAnalysis';
 import { useSubscriptions } from './hooks/useSubscriptions';
-import { useNewsletterGroups } from './hooks/useNewsletterGroups';
+import { useBulkSpam } from './hooks/useBulkSpam';
 
 export default function Home() {
     const { status, data: session } = useSession();

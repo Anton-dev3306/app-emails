@@ -1,6 +1,4 @@
-import { useEffect } from "react";
-import {LogOut, X} from "lucide-react";
-import {Button} from "@radix-ui/themes";
+import {X} from "lucide-react";
 
 export default function NotificationCard({ notification, onClose}) {
     if (!notification) return null;
@@ -23,14 +21,6 @@ export default function NotificationCard({ notification, onClose}) {
                     </button>
                     {notification.message}</p>
             </div>
-
-            <button
-                onClick={onClose}
-                className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center
-               bg-gray-200 hover:bg-gray-300 rounded-full text-gray-700"
-            >
-                <X size={20} />
-            </button>
         </div>
     );
 }

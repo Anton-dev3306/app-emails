@@ -31,9 +31,6 @@ export async function POST(req) {
         let pageToken = null;
         let iterations = 0;
         const maxIterations = 50;
-
-      
-
         do {
             try {
                 const searchResponse = await gmail.users.messages.list({
@@ -146,7 +143,6 @@ export async function POST(req) {
             const filters = filtersResponse.data.filter || [];
 
             for (const filter of filters) {
-                // Buscar filtros que envíen este remitente a spam
                 const matchesSender =
                     filter.criteria?.from === senderEmail ||
                     (filter.criteria?.query && filter.criteria.query.includes(senderEmail));
@@ -245,7 +241,6 @@ export async function GET(req) {
 
         const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-        // Contar cuántos correos hay en spam del remitente
         const countResponse = await gmail.users.messages.list({
             userId: 'me',
             maxResults: 1,
