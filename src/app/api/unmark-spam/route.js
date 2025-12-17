@@ -11,7 +11,7 @@ export async function POST(req) {
             return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
         }
 
-        const { senderEmail, sender, userEmail } = await req.json();
+        const { senderEmail, sender, totalEmails } = await req.json();
 
         if (!senderEmail) {
             return NextResponse.json({
