@@ -142,7 +142,8 @@ export async function POST(req) {
                 restoredToInbox: restoredCount,
                 filtersRemoved,
                 senderEmail,
-                senderName: sender
+                senderName: sender,
+                iterations: iterations
             },
             summary: filtersRemoved > 0
                 ? `${restoredCount} de ${allSpamMessages.length} correos (${successRate}%) de ${sender} restaurados y ${filtersRemoved} filtro(s) eliminado(s).`
