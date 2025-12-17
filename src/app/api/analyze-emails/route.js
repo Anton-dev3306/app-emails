@@ -166,11 +166,15 @@ export async function POST() {
                 });
             }
 
-            const senderData = senderMap.get(senderEmail);
-            senderData.totalEmails++;
-            senderData.subjects.push(email.subject);
-            senderData.dates.push(email.date);
-            senderData.messageIds.push(email.messageId);
+                    const senderData = senderMap.get(senderEmail);
+                    senderData.totalEmails++;
+
+                    const currentCount = senderData.names.get(senderName) || 0;
+                    senderData.names.set(senderName, currentCount + 1);
+
+                    senderData.subjects.push(email.subject);
+                    senderData.dates.push(email.date);
+                    senderData.messageIds.push(email.messageId);
 
             if (email.listUnsubscribe) senderData.hasUnsubscribeLink = true;
             if (email.listId) senderData.hasListId = true;
