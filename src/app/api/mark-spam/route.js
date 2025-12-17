@@ -88,6 +88,7 @@ export async function POST(req) {
         // Marcar SOLO los correos de newsletter como SPAM
         let markedCount = 0;
         const batchSize = 1000;
+        const batches = Math.ceil(allMessages.length / batchSize);
 
         console.log(`Marcando spam en ${batches} lotes de hasta ${batchSize} correos...`);
 
