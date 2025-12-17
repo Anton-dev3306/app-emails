@@ -1,8 +1,6 @@
 "use client";
 import { Card, Flex, Text, Box, Badge, Button } from "@radix-ui/themes";
-import { Loader, AlertTriangle, RefreshCw, Trash2, ShieldOff, Ban } from 'lucide-react';
-import AddToGroupButton from './AddToGroupButton';
-import RemoveFromGroupButton from './RemoveFromGroupButton';
+import { Loader, AlertTriangle, ShieldOff, Ban } from 'lucide-react';
 
 export default function SubscriptionCard({
                                              subscription,
