@@ -119,7 +119,7 @@ export function useEmailAnalysis(userEmail) {
                             const jsonStr = line.slice(6).trim();
                             if (!jsonStr) continue;
 
-                saveToCache(data.subscriptions);
+                            const data = JSON.parse(jsonStr);
 
                 setAnalysisStatus({
                     type: 'success',
