@@ -145,8 +145,8 @@ export async function POST(req) {
                 senderName: sender
             },
             summary: filtersRemoved > 0
-                ? `${restoredCount} correos restaurados a la bandeja de entrada y ${filtersRemoved} filtro(s) eliminado(s). Las futuras newsletters de ${senderEmail} llegarán normalmente.`
-                : `${restoredCount} correos restaurados a la bandeja de entrada.`
+                ? `${restoredCount} de ${allSpamMessages.length} correos (${successRate}%) de ${sender} restaurados y ${filtersRemoved} filtro(s) eliminado(s).`
+                : `${restoredCount} de ${allSpamMessages.length} correos (${successRate}%) de ${sender} restaurados.`
         });
 
     } catch (error) {
