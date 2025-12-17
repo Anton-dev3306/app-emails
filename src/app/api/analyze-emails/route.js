@@ -298,3 +298,12 @@ function getReliabilityCounts(subscriptions) {
     });
     return counts;
 }
+
+function calculateFrequency(totalEmails) {
+    if (totalEmails > 400) return 'Muy frecuente (400+)';
+    if (totalEmails > 300) return 'Muy frecuente (300+)';
+    if (totalEmails > 200) return 'Frecuente';
+    if (totalEmails > 100) return 'Regular';
+    if (totalEmails > 25) return 'Ocasional';
+    return 'Esporádica';
+}
