@@ -1,8 +1,6 @@
 "use client";
 import "@radix-ui/themes/styles.css";
-import { useState, useMemo } from 'react';
-import { Theme, Box, Card, Separator, Flex, Grid } from "@radix-ui/themes";
-import Container from './components/layout/Container';
+import { Theme, Card, Separator, Flex } from "@radix-ui/themes";
 import DashboardHeader from './components/DashboardHeader';
 import WelcomeCard from './components/WelcomeCard';
 import AnalyzeButton from './components/AnalyzeButton';
