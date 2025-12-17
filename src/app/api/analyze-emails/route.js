@@ -228,14 +228,14 @@ export async function POST() {
             })
             .sort((a, b) => b.totalEmails - a.totalEmails);
 
-        const stats = {
-            totalAnalyzed: allEmailDetails.length,
-            totalUnique: senderMap.size,
-            totalNewsletters: subscriptions.length,
-            categories: getCategoryCounts(subscriptions),
-            frequencies: getFrequencyCounts(subscriptions),
-            reliability: getReliabilityCounts(subscriptions)
-        };
+                const finalData = {
+                    type: 'complete',
+                    subscriptions: subscriptions,
+                    totalAnalyzed: messagesToAnalyze.length,
+                    totalProcessed: allEmailDetails.length,
+                    totalUnique: senderMap.size,
+                    message: `¡Análisis completo! ${subscriptions.length} newsletters encontradas`
+                };
 
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalData)}\n\n`));
                 controller.close();
