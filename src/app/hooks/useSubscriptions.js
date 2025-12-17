@@ -58,6 +58,9 @@ export function useSubscriptions(userEmail) {
 
             // 🔥 ENVÍA JSON COMO NOTIFICACIÓN AL COMPONENTE
             if (success && data) {
+                const markedCount = data.details?.markedAsSpam || data.details?.restoredToInbox || 0;
+                const totalFound = data.details?.totalFound || data.details?.totalNewsletters || totalEmails;
+
                 setNotification({
                     type: isSpam ? 'success' : 'warning',
                     message: isSpam
