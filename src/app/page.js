@@ -34,6 +34,15 @@ export default function Home() {
         clearNotification
     } = useSubscriptions(session?.user?.email);
 
+    const {
+        isProcessing,
+        bulkStatus,
+        bulkProgress,
+        allMarkedAsSpam,
+        handleMarkAllAsSpam,
+        handleUnmarkAllAsSpam,
+        stopProcess
+    } = useBulkSpam();
 
 
     //inicio de sesión
