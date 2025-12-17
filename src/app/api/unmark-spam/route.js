@@ -191,7 +191,8 @@ export async function GET(req) {
         const countResponse = await gmail.users.messages.list({
             userId: 'me',
             maxResults: 1,
-            q: `from:${senderEmail} in:spam`
+            q: `from:${senderEmail} in:spam`,
+            includeSpamTrash: true
         });
 
         const estimatedCount = countResponse.data.resultSizeEstimate || 0;
