@@ -34,13 +34,17 @@ export async function POST() {
         let allMessageIds = new Set();
         let queryResults = {};
 
-        for (const query of queries) {
-            try {
-                const result = await gmail.users.messages.list({
-                    userId: 'me',
-                    maxResults: 100,
-                    q: query
-                });
+                for (const query of queries) {
+                    try {
+                        let pageToken = null;
+
+                        do {
+                            const result = await gmail.users.messages.list({
+                                userId: 'me',
+                                maxResults: 500,
+                                q: query,
+                                pageToken: pageToken
+                            });
 
                 const messages = result.data.messages || [];
                 const beforeCount = allMessageIds.size;
