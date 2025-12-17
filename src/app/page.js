@@ -65,15 +65,9 @@ export default function Home() {
 
     if (status === 'loading') {
         return (
-            <Theme>
-                <Flex
-                    align="center"
-                    justify="center"
-                    style={{ minHeight: '100vh' }}
-                >
-                    <Loader className="animate-spin h-12 w-12 text-blue-600" />
-                </Flex>
-            </Theme>
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-xl">Cargando...</div>
+            </div>
         );
     }
 
