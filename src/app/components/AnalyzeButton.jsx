@@ -1,5 +1,5 @@
 "use client";
-import { Button, Flex } from "@radix-ui/themes";
+import { Button, Flex, Text, Box, Progress } from "@radix-ui/themes";
 import { Mail, Loader } from 'lucide-react';
 
 export default function AnalyzeButton({ isAnalyzing, onAnalyze }) {
