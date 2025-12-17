@@ -100,6 +100,7 @@ export async function POST(req) {
                 });
 
                 markedCount += messageIds.length;
+                console.log(`Spam: ${markedCount}/${allMessages.length} (${Math.round(markedCount/allMessages.length*100)}%)`);
             } catch (error) {
                 console.error(`Error marcando lote:`, error);
             }
