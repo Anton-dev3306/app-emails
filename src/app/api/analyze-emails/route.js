@@ -243,17 +243,16 @@ export async function POST() {
             timestamp: new Date().toISOString()
         });
 
-    } catch (error) {
-        return NextResponse.json(
-            {
-                error: 'Error en el análisis de correos',
-                details: error.message,
-                code: error.code || 'UNKNOWN_ERROR'
-            },
-            { status: 500 }
-        );
-    }
-}
+            } catch (error) {
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    type: 'error',
+                    error: 'Error en el análisis de correos',
+                    details: error.message
+                })}\n\n`));
+                controller.close();
+            }
+        }
+    });
 
     return new Response(stream, {
         headers: {
