@@ -63,6 +63,8 @@ export default function DashboardView({
                                 <AnalyzeButton
                                     isAnalyzing={isAnalyzing}
                                     onAnalyze={onAnalyze}
+                                    analysisProgress={analysisProgress}
+                                    finalStats={finalStats}
                                 />
                             </Flex>
 
