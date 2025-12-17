@@ -78,6 +78,7 @@ export async function POST(req) {
                 });
 
                 restoredCount += messageIds.length;
+                console.log(`Restaurados: ${restoredCount}/${allSpamMessages.length} (${Math.round(restoredCount/allSpamMessages.length*100)}%)`);
             } catch (error) {
                 console.error(`Error en lote ${Math.floor(i/batchSize) + 1}:`, error.message);
             }
