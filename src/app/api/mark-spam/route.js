@@ -152,7 +152,7 @@ export async function POST(req) {
         });
 
     } catch (error) {
-        console.error('Error marcando newsletters como spam:', error);
+        console.error('Error marcando como spam:', error);
         return NextResponse.json(
             {
                 error: 'Error al marcar newsletters como spam',
