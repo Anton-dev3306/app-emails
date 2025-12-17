@@ -32,6 +32,10 @@ export function useEmailAnalysis(userEmail) {
 
                 if (cacheAge < CACHE_DURATION) {
                     setSubscriptions(data.subscriptions);
+                    setFinalStats({
+                        totalAnalyzed: data.totalAnalyzed || data.subscriptions.length,
+                        totalNewsletters: data.subscriptions.length
+                    });
                     setAnalysisStatus({
                         type: 'cached',
                         message: `${data.subscriptions.length} newsletters cargadas (actualizado hace ${formatCacheAge(cacheAge)})`
