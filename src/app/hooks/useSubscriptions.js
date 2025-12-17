@@ -68,7 +68,7 @@ export function useSubscriptions(userEmail) {
             if (!success) {
                 setNotification({
                     type: 'error',
-                    message: error
+                    message: error || 'Error al procesar la solicitud'
                 });
             }
         },
