@@ -46,7 +46,7 @@ export function useEmailAnalysis(userEmail) {
 
             setAnalysisStatus({
                 type: 'info',
-                message: 'Haz clic en "Analizar Correos" para comenzar'
+                message: 'Haz clic en "Analizar Correos" para comenzar el análisis completo'
             });
 
             return false;
