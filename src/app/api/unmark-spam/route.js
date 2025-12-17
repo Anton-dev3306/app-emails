@@ -114,8 +114,7 @@ export async function POST(req) {
             console.error('Error eliminando filtros:', error);
         }
 
-        //  Marcar los correos restaurados como no leídos (opcional)
-        // Esto ayuda a que el usuario los vea
+        // Marcar los primeros 20 como no leídos
         try {
             if (allSpamMessages.length > 0) {
                 const recentMessages = allSpamMessages.slice(0, 20);
