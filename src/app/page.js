@@ -94,8 +94,14 @@ export default function Home() {
             onToggleSpam={handleSpamToggle}
             notification={notification}
             clearNotification={clearNotification}
-            />
-
-        </>
+            // Bulk spam props
+            isProcessingBulk={isProcessing}
+            bulkStatus={bulkStatus}
+            bulkProgress={bulkProgress}
+            allMarkedAsSpam={allMarkedAsSpam}
+            onMarkAllAsSpam={handleMarkAllAsSpam}
+            onUnmarkAllAsSpam={handleUnmarkAllAsSpam}
+            onStopBulkProcess={stopProcess}
+        />
     );
 }
