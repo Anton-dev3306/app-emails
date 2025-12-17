@@ -91,7 +91,6 @@ export default function Home() {
             analysisProgress={analysisProgress}
             finalStats={finalStats}
             subscriptionStates={subscriptionStates}
-            onToggleSubscription={handleSubscriptionToggle}
             onToggleSpam={handleSpamToggle}
             notification={notification}
             clearNotification={clearNotification}
