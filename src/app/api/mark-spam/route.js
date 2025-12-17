@@ -127,6 +127,7 @@ export async function POST(req) {
                 }
             });
             filterCreated = true;
+            console.log(`Filtro de spam creado para ${senderEmail}`);
         } catch (error) {
             console.log('Error creando filtro:', error.message);
         }
