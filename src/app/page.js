@@ -44,8 +44,6 @@ export default function Home() {
         stopProcess
     } = useBulkSpam();
 
-
-    //inicio de sesión
     const handleGetStarted = async () => {
         try {
             setIsSigningIn(true);
