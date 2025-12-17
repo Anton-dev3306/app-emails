@@ -61,7 +61,7 @@ export async function POST(req) {
                 }
 
                 if (pageToken) {
-                    await new Promise(resolve => setTimeout(resolve, 50)); // Reducido para ser más rápido
+                    await new Promise(resolve => setTimeout(resolve, 50));
                 }
             } catch (error) {
                 console.error('Error en búsqueda:', error);
