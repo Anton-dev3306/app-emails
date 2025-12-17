@@ -21,7 +21,6 @@ export default function DashboardView({
                                           finalStats,
                                           subscriptionStates,
                                           onToggleSpam,
-                  
                                           notification,
                                           clearNotification,
                                           // Bulk spam props
