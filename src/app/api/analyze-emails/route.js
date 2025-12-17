@@ -131,12 +131,7 @@ export async function POST() {
                     const senderEmail = extractEmail(email);
                     if (!senderEmail) continue;
 
-            if (!senderEmail) return;
-
-            let senderName = email.from.split('<')[0].trim().replace(/['"]/g, '');
-            if (!senderName || senderName === senderEmail) {
-                senderName = senderEmail.split('@')[0];
-            }
+                    const senderName = extractSenderName(email.from, senderEmail);
 
                     if (!senderMap.has(senderEmail)) {
                         senderMap.set(senderEmail, {
