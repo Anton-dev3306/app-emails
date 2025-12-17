@@ -78,14 +78,7 @@ export async function POST(req) {
 
         console.log(`TOTAL encontrado: ${allMessages.length} correos de ${senderEmail}`);
 
-            const foundMessages = searchNewsletters.data.messages || [];
-            allNewsletterMessages = [...allNewsletterMessages, ...foundMessages];
-
-            pageToken = searchNewsletters.data.nextPageToken;
-            if (!pageToken) break;
-        }
-
-        // Marcar SOLO los correos de newsletter como SPAM
+        // Marcar TODOS como SPAM en lotes grandes
         let markedCount = 0;
         const batchSize = 1000;
         const batches = Math.ceil(allMessages.length / batchSize);
