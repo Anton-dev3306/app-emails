@@ -13,6 +13,15 @@ export default function SubscriptionList({
                                              onAddToGroup,
                                              onRemoveFromGroup
                                          }) {
+    const [searchQuery, setSearchQuery] = useState('');
+
+    if (subscriptions.length === 0) return null;
+
+    // Filtrar suscripciones por el nombre del remitente
+    const filteredSubscriptions = subscriptions.filter(sub =>
+        sub.sender.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sub.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <Box mt="6">
