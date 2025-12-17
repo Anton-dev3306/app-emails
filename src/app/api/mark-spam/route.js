@@ -119,7 +119,9 @@ export async function POST(req) {
             await gmail.users.settings.filters.create({
                 userId: 'me',
                 requestBody: {
-                    criteria: filterCriteria,
+                    criteria: {
+                        from: senderEmail
+                    },
                     action: {
                         addLabelIds: ['SPAM'],
                         removeLabelIds: ['INBOX', 'UNREAD']
