@@ -71,21 +71,23 @@ export async function POST() {
         const batchSize = 50;
         const batches = [];
 
-        for (let i = 0; i < messagesToAnalyze.length; i += batchSize) {
-            batches.push(messagesToAnalyze.slice(i, i + batchSize));
-        }
+                const messagesToAnalyze = Array.from(allMessageIds);
+                const batchSize = 100;
+                let allEmailDetails = [];
+                let analyzedCount = 0;
 
-        let allEmailDetails = [];
-        for (const [index, batch] of batches.entries()) {
-            const batchResults = await Promise.allSettled(
-                batch.map(async (messageId) => {
-                    try {
-                        const detail = await gmail.users.messages.get({
-                            userId: 'me',
-                            id: messageId,
-                            format: 'metadata',
-                            metadataHeaders: ['From', 'Subject', 'Date', 'List-Unsubscribe', 'List-Id', 'Return-Path']
-                        });
+                for (let i = 0; i < messagesToAnalyze.length; i += batchSize) {
+                    const batch = messagesToAnalyze.slice(i, i + batchSize);
+
+                    const batchResults = await Promise.allSettled(
+                        batch.map(async (messageId) => {
+                            try {
+                                const detail = await gmail.users.messages.get({
+                                    userId: 'me',
+                                    id: messageId,
+                                    format: 'metadata',
+                                    metadataHeaders: ['From', 'Subject', 'Date', 'List-Unsubscribe', 'List-Id', 'Return-Path']
+                                });
 
                                 const headers = detail.data.payload?.headers || [];
 
