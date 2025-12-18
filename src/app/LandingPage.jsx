@@ -7,7 +7,7 @@ export default function LandingPage({ onGetStarted, isLoading }) {
     return (
         <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
             <Container>
-                <section className="py-20 text-center">
+                <section className="py-10  text-center">
                     <div className="max-w-3xl mx-auto">
                         <div className="inline-flex items-center justify-center w-20 h-20 mb-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500">
                             <Mail className="text-blue-300" size={48} strokeWidth={2} />
