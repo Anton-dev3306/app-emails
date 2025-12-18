@@ -33,17 +33,10 @@ export default function LandingPage({ onGetStarted, isLoading }) {
                                 size="3"
                                 className="px-6"
                             >
-                                {isLoading ? (
-                                    <span className="flex items-center">
-                                        <span className="animate-spin mr-2">⌛</span>
-                                        Iniciando sesión...
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center">
-                                        <Mail className="mr-2 h-5 w-5" />
-                                        Comenzar Ahora
-                                    </span>
-                                )}
+                            <span className="flex items-center">
+                                <Mail className="mr-2 h-5 w-5" />
+                                {isLoading ? "Iniciando sesión..." : "Comenzar Ahora"}
+                            </span>
                             </Button>
                         </Theme>
 
