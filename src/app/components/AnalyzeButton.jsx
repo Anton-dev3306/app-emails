@@ -16,7 +16,7 @@ export default function AnalyzeButton({
                         onClick={onAnalyze}
                         disabled={isAnalyzing}
                         size="3"
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', cursor: 'pointer' }}
                     >
                         <Flex align="center" gap="2">
                             <Mail className="h-5 w-5" />
