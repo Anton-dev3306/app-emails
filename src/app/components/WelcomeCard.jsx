@@ -24,7 +24,8 @@ export default function WelcomeCard() {
                 <Flex align="center" gap="2">
                     <CheckCircle className="h-4 w-4 text-indigo-600" />
                     <Text size="2" color="gray">
-                        Te mostraremos un resumen detallado
+                        Te mostraremos una lista ordenada de los remitentes que mas correos te han mandado para que
+                        puedas mandar a spam en masa remitente por remitente o todos a la vez.
                     </Text>
                 </Flex>
             </Flex>
