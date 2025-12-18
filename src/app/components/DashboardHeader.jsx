@@ -7,7 +7,7 @@ export default function DashboardHeader({ session, onSignOut }) {
         <Flex direction="column" gap="4" mb="6">
             <Flex justify="between" align="center">
                 <Text size="7" weight="bold" style={{ color: '#000' }}></Text>
-                <Button onClick={onSignOut} color="red" variant="soft" size="2">
+                <Button onClick={onSignOut} color="red" variant="soft" size="2" style={{ cursor: 'pointer' }}>
                     <LogOut className="h-4 w-4" />
                     Cerrar Sesión
                 </Button>
