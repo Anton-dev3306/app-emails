@@ -15,7 +15,7 @@ export default function LandingPage({ onGetStarted, isLoading }) {
                         <h1 className="text-5xl font-bold text-gray-900 mb-6">
                             Detector de Suscripciones Ocultas
                         </h1>
-                        <p className="text-xl text-gray-600 mb-8">
+                        <p className="text-2xl text-gray-500 mb-5">
                             Conecta tu Gmail y descubre todas las suscripciones que olvidaste.
                         </p>
                         <Theme>
