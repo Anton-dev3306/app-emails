@@ -9,8 +9,8 @@ export default function LandingPage({ onGetStarted, isLoading }) {
             <Container>
                 <section className="py-20 text-center">
                     <div className="max-w-3xl mx-auto">
-                        <div className="inline-flex items-center justify-center p-2 mb-6 bg-blue-100 rounded-full">
-                            <Mail className="text-blue-600" size={48} />
+                        <div className="inline-flex items-center justify-center w-20 h-20 mb-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500">
+                            <Mail className="text-blue-300" size={48} strokeWidth={2} />
                         </div>
                         <h1 className="text-5xl font-bold text-gray-900 mb-6">
                             Detector de Suscripciones Ocultas
