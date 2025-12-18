@@ -22,7 +22,8 @@ export default function LandingPage({ onGetStarted, isLoading }) {
                             </h1>
                         </div>
                         <p className="text-2xl text-gray-500 mb-5">
-                            Conecta tu Gmail y descubre todas las suscripciones que olvidaste.
+                            Conecta tu email, descubre remitentes recurrentes, suscripciones olvidadas
+                            y marca spam en masa sin esfuerzo.
                         </p>
                         <Theme>
                             <Button
