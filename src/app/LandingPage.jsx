@@ -14,12 +14,13 @@ export default function LandingPage({ onGetStarted, isLoading }) {
                                 <Mail className="text-blue-300" size={40} strokeWidth={2} />
                             </div>
 
-                        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight text-balance">
-                            Detector de Suscripciones
-                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                Ocultas
-              </span>
-                        </h1>
+                            <h1 className="text-5xl md:text-5xl font-bold text-gray-900 leading-tight text-balance">
+                                Limpiador de{" "}
+                                <Strong className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                                    Email
+                                </Strong>
+                            </h1>
+                        </div>
                         <p className="text-2xl text-gray-500 mb-5">
                             Conecta tu Gmail y descubre todas las suscripciones que olvidaste.
                         </p>
