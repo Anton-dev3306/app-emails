@@ -1,5 +1,5 @@
 "use client";
-import { Theme, Button } from "@radix-ui/themes";
+import {Theme, Button, Strong} from "@radix-ui/themes";
 import { Mail } from "lucide-react";
 import Container from './components/layout/Container';
 
