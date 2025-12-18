@@ -25,8 +25,9 @@ export default function LandingPage({ onGetStarted, isLoading }) {
                             Conecta tu email, descubre remitentes recurrentes, suscripciones olvidadas
                             y marca spam en masa sin esfuerzo.
                         </p>
-                        <Theme>
-                            <Button
+
+                        <Theme style={{ background: 'transparent' }}>
+                            <Button style={{ cursor: 'pointer' }}
                                 onClick={onGetStarted}
                                 disabled={isLoading}
                                 size="3"
