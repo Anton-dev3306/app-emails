@@ -18,7 +18,7 @@ export default function WelcomeCard() {
                 <Flex align="center" gap="2">
                     <CheckCircle className="h-4 w-4 text-indigo-600" />
                     <Text size="2" color="gray">
-                        Identificaremos tus suscripciones activas
+                        Identificaremos tus remitentes mas recurrentes y suscripciones activas
                     </Text>
                 </Flex>
                 <Flex align="center" gap="2">
