@@ -46,6 +46,7 @@ export default function LandingPage({ onGetStarted, isLoading }) {
                                 )}
                             </Button>
                         </Theme>
+
                     </div>
                 </section>
             </Container>
