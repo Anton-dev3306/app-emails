@@ -12,8 +12,12 @@ export default function LandingPage({ onGetStarted, isLoading }) {
                         <div className="inline-flex items-center justify-center w-20 h-20 mb-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500">
                             <Mail className="text-blue-300" size={48} strokeWidth={2} />
                         </div>
-                        <h1 className="text-5xl font-bold text-gray-900 mb-6">
-                            Detector de Suscripciones Ocultas
+
+                        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight text-balance">
+                            Detector de Suscripciones
+                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                Ocultas
+              </span>
                         </h1>
                         <p className="text-2xl text-gray-500 mb-5">
                             Conecta tu Gmail y descubre todas las suscripciones que olvidaste.
