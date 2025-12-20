@@ -7,14 +7,25 @@ export async function POST(request) {
 
     const stream = new ReadableStream({
         async start(controller) {
+            // Helper para enviar datos de forma segura
+            const safeEnqueue = (data) => {
+                try {
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
+                    return true;
+                } catch (error) {
+                    console.log('⚠️ No se pudo enviar datos, stream cerrado');
+                    return false;
+                }
+            };
+
             try {
                 const session = await getServerSession(authOptions);
 
                 if (!session?.accessToken) {
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    safeEnqueue({
                         type: 'error',
                         error: 'No autorizado'
-                    })}\n\n`));
+                    });
                     controller.close();
                     return;
                 }
@@ -26,10 +37,12 @@ export async function POST(request) {
 
                 const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                if (!safeEnqueue({
                     type: 'start',
                     message: 'Iniciando análisis...'
-                })}\n\n`));
+                })) {
+                    return;
+                }
 
                 const queries = [
                     'list-unsubscribe',
@@ -47,10 +60,12 @@ export async function POST(request) {
                 let allMessageIds = new Set();
 
                 // Fase 1: Recolectar TODOS los IDs
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                if (!safeEnqueue({
                     type: 'phase',
                     message: 'Buscando newsletters en tu correo...'
-                })}\n\n`));
+                })) {
+                    return;
+                }
 
                 for (const query of queries) {
                     try {
@@ -67,11 +82,13 @@ export async function POST(request) {
                             const messages = result.data.messages || [];
                             messages.forEach(msg => allMessageIds.add(msg.id));
 
-                            controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                            if (!safeEnqueue({
                                 type: 'collecting',
                                 current: allMessageIds.size,
                                 message: `Encontrados ${allMessageIds.size} correos potenciales...`
-                            })}\n\n`));
+                            })) {
+                                return;
+                            }
 
                             pageToken = result.data.nextPageToken;
 
@@ -87,21 +104,23 @@ export async function POST(request) {
                 }
 
                 if (allMessageIds.size === 0) {
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    safeEnqueue({
                         type: 'complete',
                         subscriptions: [],
                         totalAnalyzed: 0,
                         message: 'No se encontraron newsletters'
-                    })}\n\n`));
+                    });
                     controller.close();
                     return;
                 }
 
                 // Fase 2: Analizar TODOS los mensajes
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                if (!safeEnqueue({
                     type: 'phase',
                     message: `Analizando ${allMessageIds.size} correos...`
-                })}\n\n`));
+                })) {
+                    return;
+                }
 
                 const messagesToAnalyze = Array.from(allMessageIds);
                 const batchSize = 100;
@@ -146,22 +165,27 @@ export async function POST(request) {
                     analyzedCount += batch.length;
 
                     const percentage = Math.round((analyzedCount / messagesToAnalyze.length) * 100);
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+
+                    if (!safeEnqueue({
                         type: 'progress',
                         current: analyzedCount,
                         total: messagesToAnalyze.length,
                         percentage: percentage,
                         message: `${analyzedCount} correos analizados...`
-                    })}\n\n`));
+                    })) {
+                        return;
+                    }
 
                     await new Promise(resolve => setTimeout(resolve, 100));
                 }
 
                 // Fase 3: Agrupar y contar
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                if (!safeEnqueue({
                     type: 'phase',
                     message: 'Agrupando newsletters y contando correos exactos...'
-                })}\n\n`));
+                })) {
+                    return;
+                }
 
                 const senderMap = new Map();
 
@@ -198,33 +222,56 @@ export async function POST(request) {
                     if (email.listId) senderData.hasListId = true;
                 }
 
-// Fase 4: Obtener conteos exactos en paralelo con lotes
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                // Fase 4: Obtener conteos exactos en paralelo con lotes
+                if (!safeEnqueue({
                     type: 'phase',
                     message: `Obteniendo conteo exacto de ${senderMap.size} remitentes...`
-                })}\n\n`));
+                })) {
+                    return;
+                }
+
+                console.log('🚀 Iniciando Fase 4 - Total remitentes:', senderMap.size);
 
                 const senderEntries = Array.from(senderMap.entries());
+                console.log('📋 Primeros 3 remitentes en senderEntries:', senderEntries.slice(0, 3).map(([email]) => email));
+
                 const subscriptionsWithExactCount = [];
                 const batchSizeCount = 20;
                 let processedCount = 0;
 
                 for (let i = 0; i < senderEntries.length; i += batchSizeCount) {
                     const batch = senderEntries.slice(i, i + batchSizeCount);
+                    console.log(`\n🔄 Procesando lote ${Math.floor(i/batchSizeCount) + 1}, tamaño: ${batch.length}`);
 
                     const batchResults = await Promise.all(
-                        batch.map(async (entry) => {
+                        batch.map(async (entry, batchIndex) => {
                             const senderEmail = entry[0];
                             const senderData = entry[1];
 
-                            try {
-                                const searchResult = await gmail.users.messages.list({
-                                    userId: 'me',
-                                    q: `from:"${senderEmail}"`,
-                                    maxResults: 1
-                                });
+                            console.log(`  ➡️ [${batchIndex}] Iniciando: ${senderEmail}`);
 
-                                const exactCount = searchResult.data.resultSizeEstimate || senderData.totalEmails;
+                            try {
+                                // Obtener conteo REAL paginando todos los resultados
+                                let exactCount = 0;
+                                let pageToken = null;
+
+                                do {
+                                    const searchResult = await gmail.users.messages.list({
+                                        userId: 'me',
+                                        q: `from:"${senderEmail}"`,
+                                        maxResults: 500,
+                                        pageToken: pageToken
+                                    });
+
+                                    const messages = searchResult.data.messages || [];
+                                    exactCount += messages.length;
+                                    pageToken = searchResult.data.nextPageToken;
+
+                                    // Si no hay más páginas, salir
+                                    if (!pageToken) break;
+                                } while (pageToken);
+
+                                console.log(`  ✅ [${batchIndex}] ${senderEmail} -> Count: ${exactCount}`);
 
                                 let mostCommonName = senderEmail.split('@')[0];
                                 let maxCount = 0;
@@ -237,7 +284,7 @@ export async function POST(request) {
                                     }
                                 }
 
-                                return {
+                                const resultObj = {
                                     sender: mostCommonName,
                                     email: senderEmail,
                                     totalEmails: exactCount,
@@ -248,7 +295,13 @@ export async function POST(request) {
                                     lastEmailDate: senderData.dates[senderData.dates.length - 1],
                                     firstEmailDate: senderData.dates[0]
                                 };
+
+                                console.log(`  📦 [${batchIndex}] Objeto creado para ${senderEmail}:`, { email: resultObj.email, totalEmails: resultObj.totalEmails });
+
+                                return resultObj;
                             } catch (error) {
+                                console.log(`  ❌ [${batchIndex}] Error en ${senderEmail}:`, error.message);
+
                                 let mostCommonName = senderEmail.split('@')[0];
                                 let maxCount = 0;
 
@@ -275,16 +328,30 @@ export async function POST(request) {
                         })
                     );
 
+                    console.log(`\n📊 Lote completado. Resultados:`, batchResults.map(r => ({ email: r.email, count: r.totalEmails })));
+
                     subscriptionsWithExactCount.push(...batchResults);
                     processedCount += batch.length;
 
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    console.log(`📈 Total acumulado: ${subscriptionsWithExactCount.length} subscriptions`);
+                    console.log(`🔢 Primeras 3 en array:`, subscriptionsWithExactCount.slice(0, 3).map(s => ({ email: s.email, count: s.totalEmails })));
+
+                    if (!safeEnqueue({
                         type: 'counting',
                         current: processedCount,
                         total: senderEntries.length,
                         message: `Conteo exacto: ${processedCount}/${senderEntries.length} remitentes procesados...`
-                    })}\n\n`));
+                    })) {
+                        return;
+                    }
                 }
+
+                console.log('\n🏁 Fase 4 completada. Total subscriptions:', subscriptionsWithExactCount.length);
+                console.log('📊 Verificación final - Primeras 5:', subscriptionsWithExactCount.slice(0, 5).map(s => ({
+                    email: s.email,
+                    count: s.totalEmails,
+                    freq: s.frequency
+                })));
 
                 const subscriptions = subscriptionsWithExactCount
                     .filter(s => {
@@ -300,6 +367,11 @@ export async function POST(request) {
                     })
                     .sort((a, b) => b.totalEmails - a.totalEmails);
 
+                console.log('✅ Después de filtrar y ordenar:', subscriptions.slice(0, 5).map(s => ({
+                    email: s.email,
+                    count: s.totalEmails
+                })));
+
                 const finalData = {
                     type: 'complete',
                     subscriptions: subscriptions,
@@ -309,15 +381,16 @@ export async function POST(request) {
                     message: `¡Análisis completo! ${subscriptions.length} newsletters encontradas`
                 };
 
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalData)}\n\n`));
+                safeEnqueue(finalData);
                 controller.close();
 
             } catch (error) {
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                console.error('💥 Error fatal en API:', error);
+                safeEnqueue({
                     type: 'error',
                     error: 'Error en el análisis de correos',
                     details: error.message
-                })}\n\n`));
+                });
                 controller.close();
             }
         }
@@ -328,6 +401,7 @@ export async function POST(request) {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
             'Connection': 'keep-alive',
+            'X-Accel-Buffering': 'no', // Deshabilita buffering de nginx/proxy
         },
     });
 }

@@ -168,6 +168,14 @@ export function useEmailAnalysis(userEmail) {
                                 });
                             } else if (data.type === 'complete') {
                                 const subs = data.subscriptions || [];
+                                console.log('📦 Subscription recibida:', data.subscriptions[0]);
+                               console.log('📦 Total subscriptions:', subs.length);
+                                console.log('📦 Primeras 3 subscriptions:', subs.slice(0, 3).map(s => ({
+                                    email: s.email,
+                                    sender: s.sender,
+                                    totalEmails: s.totalEmails
+                                })));
+
                                 setSubscriptions(subs);
                                 setFinalStats({
                                     totalAnalyzed: data.totalAnalyzed || 0,
